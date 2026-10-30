@@ -1,0 +1,62 @@
+= First experiment on one of our boards
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+== Before starting
+
+Choose a complete design directory, including `.kicad_pro`, `.kicad_sch`, `.kicad_pcb`, custom rules, library tables and project libraries. Save/close the design in KiCad before copying. External libraries must either be installed consistently or made project-relative. The harness rejects symlinks; it cannot discover every dependency encoded in library tables.
+
+Fill in the experiment's `board-brief.adoc`. The names 7xsys, 7xmod and 7xmem do not specify voltages, pinouts, timing or mechanics. Unknown requirements remain explicit blockers for edits that depend on them.
+
+== Check the environment
+
+[source,bash]
+----
+/usr/bin/python3 tools/pcb-lab.py doctor
+----
+
+The initial host has KiCad/pcbnew 10.0.7 and Java 27. A successful doctor command reports availability only; it does not prove that a router works. Linux system Python can see distro KiCad bindings when a custom Python or venv cannot. On another OS, use that KiCad installation's compatible Python.
+
+== Copy and version the experiment
+
+[source,bash]
+----
+/usr/bin/python3 tools/pcb-lab.py init --source /path/to/complete-board-project --dest experiments/7xmod-a
+cd experiments/7xmod-a
+git init -b main
+git add .
+git commit -m "Record copied design baseline"
+----
+
+Use a new destination. `init` copies files under `design/`, adds the generic templates and records source/copied hashes. It excludes Git metadata, locks and personal KiCad state. It does not initialize the nested Git repo automatically. The outer toolkit ignores `experiments/`, so private designs do not accidentally enter its commits.
+
+Replace the explicit brief placeholders before relying on the design constraints. Record source revision, board filename and library dependencies in the experiment README.
+
+== Establish the baseline
+
+From the toolkit root:
+
+[source,bash]
+----
+/usr/bin/python3 tools/pcb-lab.py check --board experiments/7xmod-a/design/Board.kicad_pcb --out experiments/7xmod-a/reports/baseline
+----
+
+The report includes native ERC/DRC JSON, exported XML netlist, schematic PDF, geometry snapshot, command logs and `checks.json`. Reports must use new directories. Checks run on saved copper without refilling zones, so record whether the input zones are current.
+
+An unrouted board is expected to have unconnected items. A nonzero result is useful evidence, not a reason to disable the rule. Explain baseline errors and distinguish existing issues from regressions. Inspect the generated schematic, not just the status word. ERC/DRC exclusions also need review.
+
+== First edit and readback
+
+Begin with a reversible operation on a disposable copy, such as moving a noncritical footprint and moving it back. Compare the resulting state and confirm native KiCad can open it. For schematic cleanup, compare netlists before and after with `--names` if names must be preserved. For circuit changes, document the intended netlist differences instead of demanding identity.
+
+The harness does not implement arbitrary schematic editing or placement. Codex must use an inspected script, native API or optional MCP tool for those operations. It does not click the KiCad GUI itself.
+
+== Acceptance and next experiment
+
+Record source/candidate hashes, tool versions, elapsed time, constraints, changed geometry, native checks and visual findings. Accept the candidate only for the scope actually reviewed. Route experiments use link:03-routing-lab.adoc[the routing guide]. Manufacturing work uses link:workflow/release-package.adoc[fixed packages] and link:workflow/jlc-ordering.adoc[JLC ordering].
+
+For a first tool check only, the upstream example can be copied with `--source examples/max-m10s-breakout-revc`. It is already routed and therefore is not a meaningful routing-quality benchmark. Do not remove its copper in the reference directory.

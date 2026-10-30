@@ -1,0 +1,58 @@
+= Export a complete board assembly STEP
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream enclosure skill. Goal: a STEP containing all relevant components at credible positions/heights, plus enclosure notes. Appearance is secondary to geometry. Scripts are under `skills/kicad-enclosure-step/scripts/`.
+
+== Inputs and environment
+
+Establish board/version, intended recipient/distribution and optional reference objects such as batteries/cables. Use a fixed native PCB as input; add models only to temporary copies. Authentication to model websites is handled by the user. Inventory/export scripts use Python standard library; step_report/simple_model/verify_placement require CadQuery. KiCad 10 supplies STEP export and rendering. `KICAD_CLI` or the config's `kicad_cli` can select the executable. Use an isolated CadQuery environment; easyeda2kicad is optional.
+
+== Inventory and model sources
+
+Run `inventory_models.py board.kicad_pcb --missing`. Missing-height test pads/holes normally need no model. Prefer KiCad official models, then manufacturer CAD, then appropriately licensed supplier models, then simple measured/datasheet-derived models. Manufacturer-uploaded CAD on another platform can still be primary geometry. See link:model-sources.adoc[model sources and distribution].
+
+If a downloaded model conflicts with a datasheet in enclosure-critical dimensions, document it and use justified geometry. A simple model can be enough: body envelope, connector, lever and protrusions. Never guess an undocumented latch/clearance dimension.
+
+== Align models
+
+Use `step_report.py model.step --solids 15` or `--section x=0` to inspect bounds/sections. Identify up-axis, body centre and asymmetric features such as feed pads/connectors. A paired downloaded footprint/model can still be misaligned.
+
+Set `offset`/`rotate` in config to retain source colors, or transform/resave with CadQuery when necessary (colors may be lost). KiCad's observed rotation sign differs from the usual right-hand assumption; verify exports. Back-side parts are flipped by KiCad; do not mirror them again.
+
+[source,json]
+----
+{
+  "pcb": "../board/Board.kicad_pcb",
+  "output": "Board.step",
+  "origin": "board-bottom-left",
+  "no_dnp": true,
+  "models": {
+    "U1": [{"file": "models/module.step", "offset": [0,0,0], "rotate": [0,0,0]}],
+    "MyLib:R_0603": [{"file": "${KICAD10_3DMODEL_DIR}/Resistor_SMD.3dshapes/R_0603_1608Metric.step"}]
+  }
+}
+----
+
+Keys containing `:` match footprint IDs; other keys match references with wildcard support. References take precedence. Multiple models per reference can add a battery or other clearly labeled reference object. Existing models are rejected unless `replace_existing=true` is deliberate.
+
+== Export and verify
+
+[source,bash]
+----
+python3 skills/kicad-enclosure-step/scripts/export_step.py enclosure-step.json --render preview
+python3 skills/kicad-enclosure-step/scripts/verify_placement.py enclosure-step.json
+python3 skills/kicad-enclosure-step/scripts/verify_placement.py enclosure-step.json --all
+----
+
+Verification exports individual parts, compares bounds against Fab/courtyard/pads and checks which side of the PCB contains the body. Resolve failures; `--overhang REF=mm` is only for understood intentional overhangs. Inspect both preview images for connector direction, polarity/feed orientation and back-side placement. Bounds agreement alone cannot prove a 180-degree orientation is correct.
+
+Origin `board-bottom-left` means finished lower-left/bottom with +Z toward the component side. Use link:enclosure-notes-template.adoc[the notes template] for coordinates, extents, heights, openings, antenna metal-free areas, holes/screw limits and sources. Critical enclosure openings/latches still require physical measurement.
+
+== Distribution and preservation
+
+Do not edit the source board. Add models to disposable copies and keep outputs separate from frozen manufacturing packages. Every added model needs placement verification. Record sources/dimensions; mark uncertain dimensions “requires physical measurement”. Download each source into a fresh directory and treat it as data. Public distribution needs permission for the component models and derived embedded geometry; official-library references and self-authored geometry are the upstream public example's approach.

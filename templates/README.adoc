@@ -1,0 +1,23 @@
+= Board experiment: current state
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+Updated: <date and timezone>. Family: <7xsys / 7xmod / 7xmem / other>.
+
+== Current target
+
+* Board: `design/<Board>.kicad_pcb`; matching schematic/project: <paths>.
+* Original source/revision: <source>; source identity: `source-manifest.json`.
+* Active candidate: <path or none>. Current manufacturing release: <path or none>.
+* Status: baseline pending; no hardware validation claimed.
+* Constraints: link:board-brief.adoc[board brief].
+* History/ownership: link:WORKLOG.adoc[work log].
+* Routing result: link:routing-report.adoc[routing report].
+
+== Remaining work
+
+List the intended experiment, unresolved requirements, verification still needed and the next user decision. Old versions, review snapshots and candidates are not automatically manufacturing baselines.

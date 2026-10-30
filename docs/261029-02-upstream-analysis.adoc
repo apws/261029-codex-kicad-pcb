@@ -1,0 +1,77 @@
+= 2026-10-29: upstream analysis and Codex-only design
+:leveloffset: +2
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+== Findings
+
+Upstream explicitly supports either Codex or Claude Code. Both read shared instructions and skills; `CLAUDE.md` merely imports `AGENTS.md`. Handoffs describe the author's use of both agents, not a mandatory two-model architecture. The only documented Claude-specific enhancement is an optional Gmail send guard. It contributes nothing to schematic editing or routing.
+
+A second reviewer can find mistakes but a second vendor is not required. A separate Codex review or human review can serve the role. Same-model reviews may share blind spots; deterministic checks and datasheet evidence remain necessary. We do not require subagents for ordinary work.
+
+== What the repository contains
+
+* Workflow documentation and project templates for ownership, continuity, recovery and release identity.
+* Four skills: readable schematic/layout, factory production review, supplier correspondence and enclosure STEP export.
+* Python helpers for netlist comparison, pin/pad number checks, BOM/CPL agreement, Gerber raster comparison, deadlines, STEP modeling and release packaging.
+* A Node stdio caller for the separately installed Konnect MCP server.
+* A GNSS design submitted for manufacturing, with frozen ERC/DRC reports and manufacturing artifacts.
+
+It does not contain a proven general placement/routing engine. Upstream verified basic schematic operations, footprint movement and a single trace add/delete sequence. Full autorouting, automatic placement and Konnect schematic-to-PCB synchronization were not verified. Its documented Konnect DSN path had two-layer and existing-copper restrictions. These are observations of Konnect 0.12.1, not blanket limitations of native KiCad export or Freerouting.
+
+== Strengths worth keeping
+
+* Native KiCad checks decide file-level correctness, rather than an MCP success message.
+* Complete backups precede edits; a hash alone cannot restore a file.
+* Netlist comparison separates a presentation edit from a circuit change.
+* Fixed release packages keep manufacturing files and validation tied to one version.
+* Factory CAM and placement review are distinct from electrical review and from each other.
+* BOM/CPL checks and component-orientation review are useful for JLCPCB assembly.
+
+== Limits of the evidence
+
+The independent example review covered delivery-document consistency, not a fresh electrical/RF review. Hardware results are still unfilled. SPICE was skipped after timeout; EMC observations were heuristic. This supports learning the workflow, not treating the example as proof of autonomous board design.
+
+`compare_netlist.py` compares sets of connected ref.pin nodes and component fields. `check_pin_pad.py` compares number sets; it cannot establish that pad 1 physically corresponds to the right transistor terminal. Geometric CAM comparisons do not establish net equivalence or fabrication tolerances. A zero-DRC board can still have incorrect electrical choices or poor return-current paths.
+
+== Architecture for our work
+
+[source,text]
+----
+User: goals, missing constraints, review of actual design choices
+  -> Codex: plan and execute bounded edits, interpret evidence
+      -> skills: procedural instructions, loaded when relevant
+      -> scripts / MCP: concrete local operations
+          -> KiCad native project files
+          -> native ERC / DRC / netlist / PDF exports
+          -> optional Freerouting DSN -> SES route calculation
+      <- readback, reports and rendered views
+  <- candidate design, differences, unresolved issues
+----
+
+Native KiCad files remain the authoritative editable design. Do not regenerate a finished board from an initialization script. Keep one writer per design and coordinate GUI memory versus disk state explicitly.
+
+== Current environment and maintenance finding
+
+On 2026-10-29, local KiCad CLI and Python pcbnew report 10.0.7; Java reports OpenJDK 27. The Python API exposes native `ExportSpecctraDSN` and `ImportSpecctraSES`. This is a practical, version-bound initial routing adapter. The older pcbnew binding should stay behind a small adapter so it can be replaced as the supported KiCad API evolves.
+
+KiCad 10 IPC requires a running PCB editor and has no schematic-editor IPC support. Native checks/exports use the CLI; schematic editing can require a file-based implementation. See https://dev-docs.kicad.org/en/apis-and-binding/ipc-api/for-addon-developers/[KiCad API documentation].
+
+The Konnect repository was visibly archived on 2026-10-26 when inspected on 2026-10-29: https://github.com/mixelpixx/Konnect[upstream]. Therefore it is an optional pinned experiment, not a mandatory dependency for our base workflow. Archive status does not mean the existing executable cannot work.
+
+Codex supports local stdio MCP servers: https://learn.chatgpt.com/docs/extend/mcp[official documentation]. MCP is a tool protocol; it does not require Claude or another LLM.
+
+== Routing direction
+
+Start with native KiCad DSN export, local Freerouting, SES import into a new candidate, then native zone refill/DRC and comparison. Codex can improve the surrounding iteration: diagnose failures, adjust permitted constraints or placement, rerun and summarize tradeoffs. This does not itself replace Freerouting's algorithm.
+
+Compare identical starting designs. Record missing connections, DRC violations, vias, length, time, manual interventions, preservation of locked/critical geometry and review of return paths. A completed ratsnest is one criterion, not the complete quality measure. More advanced boards require explicit timing, differential-pair, impedance and return-path constraints; no such board-family facts are currently available.
+
+== Changes from upstream
+
+Claude setup and hooks are omitted. English AsciiDoc guides replace human Markdown manuals. Our internal timeline occupies `docs/`. Skills remain Codex-readable Markdown and link to the translated guides. Source attribution and file hashes are retained. The native design/manufacturing example artifacts are preserved byte-for-byte; their explanatory Markdown is moved/translated to guides. Local experiments are ignored by this toolkit's Git, with optional independent Git versioning inside each experiment.
+
+The upstream Windows/Taiwan instructions and dated JLC observations are retained as historical context and clearly labeled. They are not our shipping defaults or current quotations.

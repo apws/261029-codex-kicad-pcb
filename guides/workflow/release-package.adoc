@@ -1,0 +1,61 @@
+= Fixed manufacturing release packages
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream `docs/workflow/release-package.md`.
+
+== Freeze the files actually sent
+
+Factory questions, CAM changes and charges refer to the submitted version. Keep native design, libraries, manufacturing outputs and release verification together in `releases/<revision>/`. Never edit a submitted package; create a new revision. Keep hardware bring-up records and evolving order/support reports outside it. The project README points to the current manufacturing baseline. Prices and delivery estimates inside a release are historical snapshots.
+
+[source,text]
+----
+board-revision/
+  Board.kicad_pro / .kicad_sch / .kicad_pcb / .kicad_dru
+  fp-lib-table / sym-lib-table
+  footprints/ / symbols/
+  manufacturing/   Gerbers + drills, BOM, CPL, assembly and schematic PDFs
+  verification/    ERC, DRC, release checks, review
+  README.adoc       exact manufacturing inputs and verification limits
+----
+
+Use project-relative `${KIPRJMOD}` library paths. Exclude personal `.kicad_prl`, autosaves and vendor datasheets. Use the entire matching manufacturing set, never files from different revisions.
+
+== Package and verify identity
+
+[source,bash]
+----
+python3 scripts/package_release.py --src releases/my-board-revC --out dist
+----
+
+The script hashes every member, writes `SHA256-files.json`, creates a ZIP, reopens it and verifies members, then writes the ZIP hash. Keep the complete archive for recovery. File hashes identify content; ZIP hashes identify the particular archive. Timestamps, permissions and compression versions can make rebuilt archives differ despite identical member content. `all_entries_verified` describes archive identity only; it is not ERC/DRC, CAM completeness, factory acceptance or hardware validation.
+
+== Record release checks
+
+[source,json]
+----
+{
+  "revision": "A",
+  "checked_at": "<ISO timestamp with timezone>",
+  "design_file_checks_pass": false,
+  "order_readiness": "BLOCKED_REVIEW",
+  "hardware_validation": "NOT_RUN",
+  "blockers": ["List unresolved issues"],
+  "checks": [
+    {"check": "ERC violations and exclusions reviewed", "pass": false},
+    {"check": "DRC, unconnected and schematic parity reviewed", "pass": false},
+    {"check": "MPN, C-code, footprint and BOM agree", "pass": false},
+    {"check": "Required copper, paste, mask, silk, edge and drill files present", "pass": false}
+  ]
+}
+----
+
+Keep hardware `NOT_RUN` until physical measurements exist. Date stock and attrition observations instead of treating them as timeless passes.
+
+== Directory names
+
+`before-complete.zip` is a complete pre-edit backup; `candidate/` is mutable; `review-snapshot.zip` or `review-r1-fixed.zip` freezes review inputs; `<board>-<rev>-<YYYYMMDD>.zip` is the manufacturing release. Same-named boards in candidates, reviews and fixtures are not interchangeable and must not be deleted merely as duplicates.

@@ -1,0 +1,50 @@
+= Pre-manufacturing checklist
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English translation/adaptation of upstream `docs/first-board-checklist.md`. Record PASS, FAIL or UNKNOWN for each item with file location, command result or datasheet page. This catches common mistakes; it is not a complete electrical review.
+
+== Scope and schematic
+
+* [ ] Function, supply and connected equipment are explicit.
+* [ ] RF, high-speed, charging or mains portions have appropriate specialist review where relevant.
+* [ ] Every IC follows a documented manufacturer circuit and pinout.
+* [ ] Each power pin has required decoupling; unused pins follow the datasheet.
+* [ ] Voltage ratings and logic levels agree; 3.3 V parts are not assumed 5 V tolerant.
+* [ ] LEDs have current limiting; switch/button pull direction agrees with firmware.
+* [ ] Reverse-polarity/overcurrent protection is addressed or its omission explicitly accepted.
+* [ ] ERC findings and exclusions are explained.
+
+== Parts and footprints
+
+* [ ] Assembly supplier codes, inventory dates and Extended-part costs are recorded.
+* [ ] Land patterns match the exact purchased part's dimensions and pins.
+* [ ] Pin 1/polarity agrees across symbol, footprint, silkscreen and actual part.
+* [ ] Connector pin order, sex and orientation match the mating equipment.
+
+== PCB
+
+* [ ] Board rules satisfy the actual design and selected manufacturing process.
+* [ ] Decoupling is close to the corresponding supply pins.
+* [ ] Power widths are justified by current/thermal requirements.
+* [ ] Return copper is continuous where needed, without unintended islands/splits.
+* [ ] Connectors, controls and holes meet enclosure/mating constraints.
+* [ ] Board/version/pin labels are legible and clear of pads.
+* [ ] DRC, unconnected and parity findings are resolved; exclusions documented.
+* [ ] 3D/assembly views show plausible orientation and no unintended interference.
+
+== Files and order
+
+* [ ] Gerber, drill, BOM, CPL and drawings are from one revision/export set.
+* [ ] Every Gerber layer and the complete outline have been viewed.
+* [ ] JLC BOM/CPL checker passes, or all warnings are explained.
+* [ ] DNP/test points/holes/fiducials are filtered appropriately for actual assembly.
+* [ ] Submitted files are frozen and referenced by README/WORKLOG.
+* [ ] Factory preview polarity, rotation and pin 1 have been checked part by part.
+* [ ] Production and placement confirmations retain manual review.
+* [ ] Excluded quotation items and additional fees are understood.
+* [ ] Uploads, orders, payments, messages and approvals have appropriate user authorization.

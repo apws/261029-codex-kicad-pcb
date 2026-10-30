@@ -1,0 +1,15 @@
+= Production review entry point
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+The upstream short redirect `docs/workflow/production-file-review.md` now points to the maintained skill and detailed guides:
+
+* link:../../skills/jlc-production-review/SKILL.md[Codex production-review skill].
+* link:../skills/jlc-production-review/procedure.adoc[Full production and placement review procedure].
+* link:../skills/jlc-production-review/cam-diff.adoc[CAM comparison scripts and status contract].
+
+Production-file review compares the factory's CAM result against the submitted manufacturing package; it does not replace electrical design review.

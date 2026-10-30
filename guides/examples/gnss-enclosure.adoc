@@ -1,0 +1,38 @@
+= Upstream GNSS enclosure STEP example
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream CAD README. Source board is the fixed Rev C native PCB; enclosure output is not fabrication artwork. Artifacts remain under link:../../examples/max-m10s-breakout-revc-cad/[CAD directory].
+
+== Contents and reproduction
+
+`MAX-M10S-RevC.step` contains the board and 19 components; five heightless test pads have no models. Top/bottom PNGs, export config and three self-authored model specs/STEP files accompany it. Reproduction needs KiCad 10 and CadQuery; use a copy so reference artifacts remain fixed:
+
+[source,bash]
+----
+python3 skills/kicad-enclosure-step/scripts/simple_model.py path/to/cad-copy/models/*.json
+python3 skills/kicad-enclosure-step/scripts/export_step.py path/to/cad-copy/enclosure-step.json --render path/to/cad-copy/preview
+python3 skills/kicad-enclosure-step/scripts/verify_placement.py path/to/cad-copy/enclosure-step.json
+----
+
+Ensure the copied config points to the intended board. Upstream recorded all 19 placements passing on 2026-10-22.
+
+== Coordinate frame and mechanical features
+
+Units mm; lower-left board bottom is origin, +X right, +Y up and +Z front. Board occupies x 0–25, y 0–36.5, z 0–1.6; antenna connector lies near high Y. Whole assembly bounds are x 0–25, y 0–36.5, z -8.63 to +4.10.
+
+* U1: x 7.45–17.55, y 17.05–26.75, top z 4.10; 2.5 mm typical above board, 2.7 mm maximum datasheet height.
+* J1: x 14.3–17.3, y 32.4–35.0, receptacle height 1.25 mm. Mated 20670 plug reaches 2.5 mm above board (about z 4.1); provide cable exit. Cable/antenna are not modeled.
+* D2/D3: x 15.2–16.8, y 3.9–4.7 and 1.6–2.4; 0603 height 1.1 mm. Provide windows/light guides if needed.
+* J2/J3: x 2.3–4.9 and 20.1–22.7, y 2.0–17.2; plastic on back, pins down to z -8.63, solder ends up to z 2.92, row pitch 17.78 mm.
+* No other back-side parts and no mounting holes; enclosure retention must use edges or headers.
+
+== Model sources
+
+C1–C3/R1–R8/D2/D3/Q1/J2/J3 use KiCad official capacitor/resistor/LED/SOT23/header models through `${KICAD10_3DMODEL_DIR}`, with unchanged pad geometry and zero offset. U1 is self-authored from UBX-20035208 R08 Table 21, 9.7 by 10.1 by 2.5 mm typical. J1 uses I-PEX 20279-001E-03, 2.6 by 3.0 by 1.25 mm. D1 uses Nexperia SOD962-2/DSN0603-2, 0.6 by 0.3 by 0.3 mm.
+
+Self-authored envelopes are MIT; official-library geometry follows the library exception described in NOTICE. Verify critical enclosure dimensions on actual parts.

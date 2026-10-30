@@ -1,0 +1,53 @@
+= Codex + KiCad PCB laboratory
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+A reusable local workflow for our 7xsys, 7xmod and 7xmem boards, with Codex as the only AI agent and JLCPCB as the preferred manufacturer. No family-specific electrical or mechanical requirements are assumed. This is a toolkit and experiment template; automatic placement and routing quality must be measured on our designs.
+
+== Start here
+
+. Read link:guides/01-how-it-works.adoc[How the complete workflow works]: user, Codex, skills, scripts and KiCad.
+. Follow link:guides/02-first-experiment.adoc[First experiment] to copy a design and establish a baseline.
+. Read link:guides/03-routing-lab.adoc[Routing laboratory] for KiCad, Freerouting and optional MCP experiments.
+. Browse link:guides/README.adoc[Guide map] for all translated upstream material.
+. Read link:docs/261029-01-project-summary.adoc[Project summary] and link:docs/261029-02-upstream-analysis.adoc[Analysis and decisions].
+
+== What is where
+
+[cols="1,3",options="header"]
+|===
+|Path |Purpose
+|`guides/` |Maintained English instructions, translated upstream guides, detailed skill references.
+|`docs/` |Our dated internal analysis, decisions and validation timeline.
+|`skills/` |Four adapted Codex skill entry points and upstream helper scripts.
+|`.agents/skills/` |Relative links that expose the skills to Codex in this workspace.
+|`tools/pcb-lab.py` |Local experiment creation, KiCad checks, DSN export and SES import.
+|`scripts/` |Upstream release packaging, CAM support infrastructure and repository checks.
+|`templates/` |Generic board brief, project instructions, work log and routing report.
+|`examples/` |Upstream GNSS reference artifacts. Never use these electrical choices as our board defaults.
+|`provenance/` |Upstream commit, file hashes and documentation migration map.
+|`experiments/` |Ignored local working copies and reports; create a separate Git repo inside each experiment if desired.
+|===
+
+== Quick commands
+
+Run at this repository root. Linux KiCad Python is normally `/usr/bin/python3`.
+
+[source,bash]
+----
+/usr/bin/python3 tools/pcb-lab.py doctor
+/usr/bin/python3 tools/pcb-lab.py init --source /path/to/design-directory --dest experiments/board-a
+/usr/bin/python3 tools/pcb-lab.py check --board experiments/board-a/design/Board.kicad_pcb --out experiments/board-a/reports/baseline
+----
+
+The source directory must contain the complete design and its local libraries. Replace `Board` with the actual filename. Read the experiment guide before routing. No router, MCP server or global Codex configuration is installed automatically.
+
+== Provenance and scope
+
+Adapted from John-owo/pcb-agent-workflow at commit `8f14d7f9f76a19c7224bc7e5a325ef35e6fce06a`, imported 2026-10-29. The original remains in the adjacent external source directory. See link:LICENSE[MIT license], link:NOTICE[third-party notices] and link:provenance/README.adoc[import policy]. This adaptation keeps the original helper code unless explicitly documented; human documentation is translated and adapted for Codex/Linux.
+
+Codex chooses actions and interprets results. KiCad stores and checks the design. Freerouting, when used, computes routes. Skills describe procedures; installing a skill does not install its external tools.

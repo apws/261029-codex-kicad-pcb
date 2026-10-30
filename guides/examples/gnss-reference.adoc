@@ -1,0 +1,51 @@
+= Upstream GNSS reference package: optional background
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream `examples/max-m10s-breakout-revc/README.md`. This example illustrates a manufacturing package and supplies file-processing fixtures. It is not a design template for 7xsys/7xmod/7xmem.
+
+== Specification and interfaces
+
+KiCad 10 release dated 2026-09-21: 25.0 by 36.5 mm, four layers, 1.6 mm thickness, OSP, JLC04161H-7628 stackup. U1 is MAX-M10S-00B with default low-gain internal LNA. I-PEX MHF I 20279-001E-03 connects a passive 50-ohm antenna with D1 ESD protection; no antenna power is supplied.
+
+Two bottom-inserted 1x6 2.54 mm headers are 17.78 mm apart. From antenna end downward, J2 is 3V3/GND/TX/RX/PPS/EXTINT; J3 is GND/SCL/SDA/RESET_N/SAFEBOOT_N/GND. TX/RX/PPS use 33-ohm series resistors, I2C uses 4.7-kohm pullups; power LED and BSS138-buffered PPS LED are present, plus TP1/TP2/TP4–TP6. V_BCKP pin 6 is intentionally unconnected; no backup cell/supercapacitor remains. UART is documented as 9600 8N1 and I2C address 0x42.
+
+Supply and logic are 3.3 V only, not 5 V tolerant. Cross TX/RX and share ground. Disconnect powered host signals before removing GNSS power to prevent backfeeding. Complete power loss requires configuration again. PPS LED blinking is not proof of a position fix.
+
+== Files and manufacturing set
+
+Artifacts remain under link:../../examples/max-m10s-breakout-revc/[the example directory]. Native project/schematic/PCB/rules and project-relative library tables are preserved. `design.json` is a summary, not a KiCad input. `manufacturing/` contains Gerber/drill/job ZIP, factory BOM, top-only CPL, assembly-orientation PDF/CSV/PNG, customer-header BOM and schematic PDF. `verification/` retains original ERC/DRC/release-check JSON; the English independent review moved to link:independent-release-review.adoc[this guide].
+
+Use Gerber ZIP, factory BOM, CPL and orientation PDF as one revision. The factory BOM has 11 groups/17 placements. Headers J2/J3 are excluded from factory assembly but retained in the native completed-product design; two per board are customer-soldered from the bottom. The Gerber is a single board without rails/fiducials; the original order asked the factory to add/remove rails, subject to engineering confirmation. Solder OSP headers promptly under the applicable process advice.
+
+Unused library items remain: backup-energy footprints ADCM_S05R5SA/CPH3225A, fiducial/tooling footprints and BAS116/C_Polarized/D symbols. Attribution is in NOTICE.
+
+== Verification and limits
+
+Upstream KiCad 10.0.6 release checks on 2026-09-21 had zero ERC/DRC violations, unconnected items and parity issues. Its 2026-10-02 rerun matched, with project libraries resolved; rerun outputs were kept outside the frozen package. The delivery delta changed D1 text/datasheet, OSP metadata and assembly lists, not board geometry/nets/routing; Gerber ZIP bytes matched the earlier quoted upload.
+
+The independent review checked release-document consistency only. It did not recompute Gerbers, check website/stackup/PDF rendering or perform electrical/RF/EMC/DFM/hardware validation. Earlier EMC work was heuristic, including concerns about missing nearby stitching vias at interface layer transitions. SPICE timed out and was skipped. No M10S hardware/assisted-positioning result exists; earlier NEO-6M ALP/AOP work is not evidence for this design.
+
+== Known caveats
+
+* D1 footprint name PESD3V3C1BSF differs from actual PESD3V3Z1BSFYL/C2908830; both use the intended DSN0603-2/SOD962-2 land pattern, 0.4 mm pitch. Procurement follows BOM.
+* D1 pad gap is about 0.144 mm, below default 0.2 mm. Local rules specify 0.13 mm between its pads, 0.15 mm RF-to-pad and 1.0 mm RF-to-ground-pour clearance. These are example-specific.
+* Gerber job `Finish` remains ENIG while board/order specification is OSP; the package was not regenerated after the finish change. This inconsistency must not be copied into our release practice.
+* J1 CPL uses mechanical centre (15.800,33.700), distinct from RF contact (15.800,32.175); check orientation/contact interpretation.
+* D2/D3/Q1/U1 orientation follows the assembly drawing, not arbitrary top markings.
+* The summary's 19 parts include two customer headers; factory assembly is 17.
+* SparkFun's public schematic was compared during design, but upstream says its design files were independently drawn, not copied.
+
+U1/J1 footprints use manufacturer land/stencil data: MAX-M10S integration manual UBX-20053088 R05 and I-PEX 20279 drawing rev.29. Vendor documents are linked, not redistributed.
+
+== Manufacturer sources
+
+* https://content.u-blox.com/sites/default/files/MAX-M10S_DataSheet_UBX-20035208.pdf[MAX-M10S].
+* https://assets.nexperia.com/documents/data-sheet/PESD3V3Z1BSF.pdf[PESD3V3Z1BSF].
+* https://www.onsemi.com/pdf/datasheet/bss138-d.pdf[BSS138].
+
+Other symbol datasheet fields were empty; look up exact BOM MPNs. Hardware procedure: link:gnss-hardware-procedure.adoc[reference procedure]. Mechanical example: link:gnss-enclosure.adoc[STEP handoff].

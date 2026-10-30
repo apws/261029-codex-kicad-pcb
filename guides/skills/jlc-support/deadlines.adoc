@@ -1,0 +1,23 @@
+= Historical JLC deadlines and support hours
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream deadlines reference. Snapshot: September 2026. Actual current emails/website override these observations.
+
+[cols="2,3,2",options="header"]
+|===
+|Item |Observed timing |Evidence type
+|PCBA placement confirmation |72 hours, then automatic production stated |System email
+|PCB production confirmation |48 hours requested to avoid delay; automatic release not stated |System email
+|Review before payment |10 minutes–4 hours; Monday–Saturday 09:00–18:00 GMT+8 |Checkout
+|Advanced PCBA review |Advertised 10–60 minutes; one case exceeded a day |Website and case record
+|One smooth order |Late-night payment, review within about one hour, CAM later that afternoon |Order/email record
+|Chat |Weekdays 24 hours; Saturday 09:00–18:00 GMT+8; Sunday absence only inferred |Contact page
+|Email |Usually within several hours |Contact page
+|===
+
+On receipt calculate the absolute deadline with timezone, record it and notify the user. Leave time for technical and human review. Include factory holidays in lead-time estimates.

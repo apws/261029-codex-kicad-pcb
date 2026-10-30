@@ -1,0 +1,91 @@
+= How the user, Codex, skills and KiCad work together
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+== The complete approach
+
+This repository is a working kit that Codex reads and calls. There is no single application that turns a sentence into a finished PCB. A session combines requirements, domain reasoning, explicit editing tools, native KiCad checks, visual inspection and user decisions. The useful automation is a repeatable loop with evidence after each change.
+
+[cols="1,3,2",options="header"]
+|===
+|Participant |Responsibilities |Does not supply automatically
+|User |Define intent, provide missing constraints, assess tradeoffs and approve manufacturing commitments |All coordinates or every command
+|Codex |Read the project, plan edits, run tools, inspect results and explain decisions |Guaranteed electrical correctness
+|`AGENTS.md` |Persistent project conventions and entry points |Executable functionality
+|`SKILL.md` |Instructions selected for a relevant task; routes to detailed references and scripts |A tool installation or a separate AI
+|Python/Node scripts |Deterministic operations such as netlist comparison and packaging |General electronics reasoning
+|MCP server |Expose named tools with structured arguments and results |A mandatory second AI agent
+|KiCad |Native project editing, libraries, connectivity/rule checks and fabrication exports |A general autonomous board designer
+|Freerouting |Compute routes from DSN, return an SES |Schematic design, placement quality or proof of signal integrity
+|===
+
+== What the user actually does
+
+Open a Codex conversation in the experiment or toolkit workspace. State the board directory and the intended task, including known constraints. For example:
+
+[quote]
+____
+Use this 7xmod project as the source. Make a recoverable experiment. Read the schematic and board, explain the current state, then establish a native ERC/DRC and connectivity baseline. Do not assume the bus voltage or mechanical standard from the family name; list anything missing from the project files.
+____
+
+Codex reads `AGENTS.md`, the project README and recent work log, finds the exact files, and checks the available tools. It can perform authorized reversible work without asking for every command. It should ask when a missing design fact affects the result: connector pinout, voltage tolerance, fixed dimensions, layer count, current, timing or what geometry may move.
+
+You can then give a bounded editing task:
+
+[quote]
+____
+Keep the connectors and mounting holes fixed. Try routing the remaining ordinary signals in a new candidate using local Freerouting. Preserve the critical nets specified in the board brief. Report all changes to existing copper, and compare the result with the baseline. Show which errors remain before proposing another iteration.
+____
+
+The resulting deliverable is a native KiCad candidate plus reports and previews. Open that candidate in KiCad for review. Tell Codex when you take over the editor and when you release it again.
+
+== How skills enter the process
+
+The four supplied skills are discoverable through `.agents/skills/` links in this repository. Start a new Codex session in this workspace after adding them. You may name a skill explicitly, for example `$readable-schematic-layout`, or ask for the task naturally. If the current client does not discover the links, instruct Codex to read the concrete `skills/<name>/SKILL.md` path. No global installation is required.
+
+[cols="1,3,2",options="header"]
+|===
+|Skill |Use it for |Relevance to our first experiments
+|`readable-schematic-layout` |Readable drawings, symbols/wires/grouping and proof that connectivity was preserved |High for schematic work; it is not an autorouter
+|`jlc-production-review` |BOM/CPL consistency and comparing original Gerbers with factory CAM |Useful before upload and later when factory files arrive
+|`jlc-support` |Verifiable supplier questions, correspondence drafts and deadlines |Later; unnecessary for local routing tests
+|`kicad-enclosure-step` |Complete component STEP assembly and enclosure clearances |When mechanical packaging matters
+|===
+
+The skills call scripts in their own `scripts/` directories. Long human explanations live in `guides/skills/`. Keep the toolkit together; copying only a `SKILL.md` loses its scripts and references. A standalone experiment points back to this toolkit through its project instructions.
+
+The optional external `kicad-happy` skills cover additional analysis such as BOM, datasheets, EMC and SPICE. They are not bundled or required for the first experiment. Their presence is not evidence that a simulation was actually run.
+
+== An actual tool cycle
+
+. Codex identifies `Board.kicad_pcb`, its matching schematic/project, relative libraries and `.kicad_dru`.
+. `pcb-lab.py init` copies the design to an experiment; it does not touch the source.
+. `pcb-lab.py check` runs native checks and exports a netlist and schematic PDF into a fresh report directory.
+. Codex reads the JSON, command exit codes and PDF render; it explains existing errors instead of silently disabling rules.
+. For routing, `export-dsn` writes a native KiCad DSN and records the source hash.
+. A locally installed Freerouting executable reads DSN and writes SES.
+. `import-ses` copies the whole candidate project to a new directory, imports into memory and saves under the original board stem. The original project stays intact.
+. Refill zones on the new candidate, run checks again, compare geometry and inspect renders.
+. Record the candidate, tool versions, results and next decision.
+
+== What MCP changes
+
+Without MCP, Codex invokes explicit local commands and edits files with scripts. This is enough for checks, reports and the native DSN/SES experiment. For schematic editing, it needs a capable file editor/library or a deliberate script; the CLI alone is not an editing API.
+
+With an MCP bridge, Codex discovers the available tool schemas, calls operations such as component movement, and reads the result. Konnect can bridge the live PCB editor through IPC. A result with `source=ipc` is live editor state; `source=file` is a disk fallback. These must not be confused. Saving and reading back is part of the edit.
+
+Konnect is optional and archived upstream as of 2026-10-26. The translated tool guide preserves its 0.12.1 observations so we can assess it, not assume all newer advertised tools work.
+
+== Who decides and when
+
+The user sets the design goals and authorizes the experiment. Codex may carry out the necessary local copying, analysis and candidate changes within that scope. New electrical choices unsupported by the brief should be surfaced. External messages, orders, payments and production approval require explicit authorization; authorizing a local route experiment does not authorize them.
+
+A skill's historical approval rules are preserved in translated guides as context. Our current project instructions and the user's actual authorization govern the local workflow. Repeated permission prompts for already-authorized reversible work add no engineering value.
+
+== What is useful now and later
+
+For 7xsys/7xmod/7xmem, begin with the board brief, baseline checks, geometry comparison and routing report. Do not inherit GNSS RF rules or JLC shipping choices from the example. Factory correspondence, Taiwan logistics and the GNSS bring-up procedure can wait. The guide map marks these topics so that understanding the repository does not require reading everything in order.

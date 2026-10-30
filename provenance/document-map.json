@@ -1,0 +1,162 @@
+{
+  "AGENTS.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "AGENTS.md"
+  },
+  "CLAUDE.md": {
+    "status": "omitted",
+    "reason": "Claude entry point not needed in Codex-only adaptation"
+  },
+  "CONTEXT.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/glossary.adoc"
+  },
+  "README.en.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "README.adoc"
+  },
+  "README.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "README.adoc"
+  },
+  "docs/agents/domain.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/agents/domain.adoc"
+  },
+  "docs/agents/issue-tracker.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/agents/issue-tracker.adoc"
+  },
+  "docs/agents/triage-labels.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/agents/triage-labels.adoc"
+  },
+  "docs/first-board-checklist.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/first-board-checklist.adoc"
+  },
+  "docs/getting-started.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/getting-started.adoc"
+  },
+  "docs/glossary.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/glossary.adoc"
+  },
+  "docs/workflow/collaboration.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/workflow/collaboration.adoc"
+  },
+  "docs/workflow/jlc-ordering.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/workflow/jlc-ordering.adoc"
+  },
+  "docs/workflow/kicad-tools.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/workflow/kicad-tools.adoc"
+  },
+  "docs/workflow/production-file-review.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/workflow/production-file-review.adoc"
+  },
+  "docs/workflow/release-package.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/workflow/release-package.adoc"
+  },
+  "examples/max-m10s-breakout-revc/README.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/examples/gnss-reference.adoc"
+  },
+  "examples/max-m10s-breakout-revc/verification/independent-release-review.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/examples/independent-release-review.adoc"
+  },
+  "examples/max-m10s-breakout-revc-cad/README.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/examples/gnss-enclosure.adoc"
+  },
+  "examples/max-m10s-breakout-revc-tests/README.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/examples/gnss-hardware-procedure.adoc"
+  },
+  "examples/max-m10s-breakout-revc-tests/results.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/examples/gnss-hardware-procedure.adoc"
+  },
+  "skills/jlc-production-review/SKILL.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/skills/jlc-production-review/procedure.adoc"
+  },
+  "skills/jlc-production-review/references/cam-diff.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/skills/jlc-production-review/cam-diff.adoc"
+  },
+  "skills/jlc-production-review/references/procedure.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/skills/jlc-production-review/procedure.adoc"
+  },
+  "skills/jlc-support/SKILL.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/skills/jlc-support/workflow.adoc"
+  },
+  "skills/jlc-support/references/case-study.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/skills/jlc-support/case-study.adoc"
+  },
+  "skills/jlc-support/references/deadlines.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/skills/jlc-support/deadlines.adoc"
+  },
+  "skills/jlc-support/references/pitfalls.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/skills/jlc-support/pitfalls.adoc"
+  },
+  "skills/jlc-support/references/templates.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/skills/jlc-support/templates.adoc"
+  },
+  "skills/kicad-enclosure-step/SKILL.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/skills/kicad-enclosure-step/workflow.adoc"
+  },
+  "skills/kicad-enclosure-step/references/enclosure-notes-template.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/skills/kicad-enclosure-step/enclosure-notes-template.adoc"
+  },
+  "skills/kicad-enclosure-step/references/model-sources.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/skills/kicad-enclosure-step/model-sources.adoc"
+  },
+  "skills/kicad-enclosure-step/references/pitfalls.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/skills/kicad-enclosure-step/pitfalls.adoc"
+  },
+  "skills/readable-schematic-layout/SKILL.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/skills/readable-schematic-layout/workflow.adoc"
+  },
+  "skills/readable-schematic-layout/references/konnect-limits.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/skills/readable-schematic-layout/konnect-limits.adoc"
+  },
+  "skills/readable-schematic-layout/references/layout.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "guides/skills/readable-schematic-layout/layout.adoc"
+  },
+  "templates/AGENTS.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "templates/AGENTS.md"
+  },
+  "templates/CLAUDE.md": {
+    "status": "omitted",
+    "reason": "Claude entry point not needed in Codex-only adaptation"
+  },
+  "templates/README.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "templates/README.adoc"
+  },
+  "templates/WORKLOG.md": {
+    "status": "English adapted translation; repeated content consolidated",
+    "destination": "templates/WORKLOG.adoc"
+  }
+}

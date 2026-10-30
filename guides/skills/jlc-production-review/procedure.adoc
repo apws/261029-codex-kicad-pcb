@@ -1,0 +1,79 @@
+= Factory production files and placement review
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream `skills/jlc-production-review/references/procedure.md`.
+
+== Two independent reviews
+
+PCB production files contain factory CAM artwork: copper, holes, mask, silk and outline, often with rails. PCBA placement confirmation concerns part identity, position, angle and polarity. Correct bare-board artwork does not establish correct component orientation. Historical notifications requested 48 hours for PCB confirmation and warned of automatic PCBA production after 72 hours; use the actual current notification. Calculate an absolute deadline/timezone on receipt and record it in WORKLOG.
+
+A preselected website option does not mean a submission occurred. Read without altering confirmation choices. The user authorizes production/placement approval; silence is not a guarantee that the factory will wait.
+
+== Prepare the comparison
+
+Use exactly the submitted frozen Gerber/drill/BOM/CPL/drawing package. Obtain the factory archive within the user's authorization, preserve it privately and record its SHA-256. JLC's documented structure uses `YG` for the uploaded original and `ok` for processed CAM; ODB++ may also be present. Review `ok`, not only a thumbnail. First compare unpacked upload member hashes against the release with `--check-upload`; archive container hashes alone are insufficient.
+
+== Layer map
+
+[cols="1,2,3",options="header"]
+|===
+|Factory name |Meaning |Inspect
+|`tl`, `bl` |Top/bottom copper |Missing/moved/shorted pads, tracks and planes
+|`l2`, `l3`, etc. |Inner copper |Plane continuity, isolation and hole pads
+|`ts`, `bs` |Top/bottom mask |Openings rather than coating itself
+|`to`, `bo` |Top/bottom silk |References, pin 1, polarity and connector labels
+|`drl` |Drill artwork |Count, positions and diameters; the example used Gerber, not Excellon
+|`ko` |Outline |Finished shape and manufacturing frame; not every line is a toolpath
+|`vcut` |V-cut drawing |Only explicitly marked V-CUT lines identify cuts
+|`sk` |Hole-process marks |Ask engineering; not another independent drill list
+|===
+
+Files may lack extensions and use inch units/2.6 notation. Select “all files” in Gerber Viewer when needed.
+
+== Align coordinates
+
+Measure both finished board and manufacturing frame. Estimate translation from drill positions (`--offset auto`) or outline corners; record rotation if present. A panel needs a separate comparison for every repeated board position. One displayed unit does not establish delivered quantity or depaneling scope.
+
+Always state coordinates as original single-board millimetres plus the transform to factory coordinates. Use top-view coordinates even when examining the bottom side in the viewer.
+
+== Run and inspect each layer
+
+Use a new private output directory. Run `render_compare.py`, `pixel_compare.py`, then `check_inner_removals.py` where inner layers exist. Inspect current exit codes and JSON status. Rendering PASS is only coverage/rendering success; pixel differences still need review. INCOMPLETE/ERROR requires correcting missing/unsupported inputs, not interpreting partial pictures as a pass.
+
+In Gerber Viewer begin with outline/drill, then enable copper, mask and silk one layer at a time. Confirm original pads/tracks/zones remain, check mask openings are not inadvertently covered, review trimmed silk and essential markings, compare hole count/position/size and finished outline. Factory machining drill diameter may exceed finished plated diameter, for example 1.15 versus 1.0 mm. Extra tooling holes should be outside the product. Paste is often supplied separately as stencil data; pair it explicitly or record incomplete coverage.
+
+== Classify every difference
+
+Common but still documented processing includes rails/tooling/fiducials, rail copper, copper compensation, teardrops, removal of unused inner pads, larger mask openings, silk trimming, drill compensation and small coordinated via moves. None is automatically acceptable in the specific design.
+
+Suspicious changes include missing original copper/holes, new shorts, shifted pads or holes without corresponding copper, lost plane connections, covered openings, missing polarity/reference marks, changed product dimensions or unexplained changes. A via moved about 0.06 mm may be legitimate only if associated pads and reconnecting tracks move coherently and clearance remains suitable. Ask the reason and factory netlist comparison result.
+
+For inner copper, use the isolated-pad heuristic and optionally a verified net-named holes list with `--plane-nets GND`. Raster comparison at roughly 0.025 mm/pixel finds differences; it does not prove net equivalence or manufacturing tolerance. Factory netlist comparison and electrical test are different evidence.
+
+== Placement review
+
+Use Top/Bottom 2D with component and reference visibility. Select each reference; use the assembly drawing/datasheet for pin 1 and polarity. 3D helps location, not authoritative polarity. Check quantity/MPN against BOM and ensure DNP is absent. Expected coordinates are original CPL coordinates plus a common transform; do not reuse stale panel coordinates.
+
+Check diode K/A, MOSFET G/S/D and module pin 1. Bidirectional ESD parts are not ordinary rectifier diodes. Inspect revised-item markers. A blank DFM field proves nothing.
+
+A website X/Y readout may be cursor position, library origin or pickup point rather than the soldering contact or mechanical centre. If an apparent 0.9 mm discrepancy exists, request an annotated explanation before asking the factory to move a component. Do not change a correct design merely to make displayed numbers match.
+
+== Clarification and records
+
+Use link:../jlc-support/templates.adoc[message template C]. Give original coordinates, transform and observed coordinates; ask for reasons and annotated checks without alleging an unproven defect. Ask only unresolved questions on follow-up and specify quantities such as “remove rails on all N boards”. State that the inquiry is not approval.
+
+The agent can calculate deadlines, read authorized sources, run comparisons, classify differences and draft reports. External messages, website choices, accepted fees/changes and production approval require the user's authorization. New design revisions must remain separate from the submitted baseline.
+
+Record receipt/deadline, baseline hashes, transform, classified differences, sent questions and unresolved issues. Keep originals/screenshots privately. A suitable conclusion is “No clear wrong revision, missing hole or polarity error found; these N items still need factory explanation.” This is not authorization to manufacture.
+
+== Limits and sources
+
+The method does not rerun ERC/DRC or evaluate RF/EMC. Tool compensation, depaneling sequence and actual placement centres can require written engineering answers. Files cannot establish physical-board performance.
+
+* https://jlcpcb.com/help/article/how-to-confirm-the-production-file[JLC production-file explanation].
+* https://www.jlc.com/portal/server_guide_39501.html[JLC explanation of unused inner pads].

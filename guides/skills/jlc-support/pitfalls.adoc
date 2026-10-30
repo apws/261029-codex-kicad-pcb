@@ -1,0 +1,27 @@
+= Supplier-process lessons from the upstream order
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream pitfalls reference, September 2026.
+
+== Schedule and money
+
+Advertised review times were not promises; holidays amplified delays. Check holiday banners and include a buffer. An approved/paid order was cancelled with a stated compliance reason, later described by support as staff error, and was not restored. Request written reasons and prepare a replacement plan rather than waiting indefinitely.
+
+Cart totals excluded some depaneling charges until review. Compare the detailed quote and ask about differences. Coupon face value differs from eligible discount; inspect the actual payment amount.
+
+== Support answers
+
+Reassurance such as “sure” or “we are chasing the team” did not identify an owner or update time; chats sometimes closed after roughly two idle minutes. Different staff contradicted whether engineering email had been sent. Check the mailbox first. Refund/compliance questions at the end of long messages were repeatedly ignored; use separate threads.
+
+A reply that the viewer shows the placement centre did not explain the 0.89 mm difference from the original mechanical centre. Follow up on the unresolved discrepancy with an annotated-image request.
+
+== Confirmation and identity
+
+PCBA emails warned of automatic production after 72 hours despite the chosen manual-confirmation setting; requesting manual retention was not evidence that automatic release had been disabled. PCB CAM and PCBA placement require separate review/confirmation.
+
+Saving carts changed IDs; include both old and new privately. A mail connector was once linked to a different account than the order mailbox; verify sender identity before sending.

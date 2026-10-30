@@ -1,0 +1,43 @@
+= Executable tools, dependencies and boundaries
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+== Local laboratory harness
+
+`tools/pcb-lab.py` is our addition. `doctor` reports tool availability; `init` copies/records a project; `check` collects native ERC/DRC/parity, netlist/PDF and geometry; `export-dsn` writes native router input; `import-ses` imports into a new complete project; `compare` compares recorded geometry fields. It does not install software, launch routers, edit arbitrary schematics, control GUI or approve a design. Use its `--help` and each subcommand's help.
+
+== Upstream reusable scripts
+
+[cols="2,3,2",options="header"]
+|===
+|Location/name |Function |Dependency/limit
+|`scripts/package_release.py` |Hash, ZIP, reopen/verify members |Python standard library; packaging identity only
+|`scripts/konnect-call.mjs` |Discover/call separately installed Konnect over stdio |Node; external server/config required
+|`scripts/check_privacy.py` |Scan tracked text and ZIP members for sensitive patterns |Python stdlib; binary images need separate inspection
+|`scripts/check_skills.py` |Validate Codex metadata, discovery links and document file links |Adapted for English/AsciiDoc; no Claude marketplace
+|`skills/readable-schematic-layout/scripts/compare_netlist.py` |Compare connectivity partitions and component fields |Python stdlib; native XML netlists
+|`skills/readable-schematic-layout/scripts/check_pin_pad.py` |Compare symbol pin and footprint pad numbers |Python stdlib; does not prove physical pin function
+|`skills/jlc-production-review/scripts/check_bom_cpl.py` |BOM/CPL fields, references, codes, coordinates/side |Python stdlib; not rotation/polarity/stock validation
+|`skills/jlc-production-review/scripts/render_compare.py` |Map/align/rasterize CAM and compare drill coordinates/upload identity |Pinned Python 3.12/gerbonara/Pillow environment
+|`skills/jlc-production-review/scripts/pixel_compare.py` |Pixel additions/removals and marked regions |Pillow; geometry only
+|`skills/jlc-production-review/scripts/check_inner_removals.py` |Heuristic isolated inner-pad removal check |Pillow; optional verified net-named holes
+|`skills/jlc-support/scripts/deadline.py` |Calculate absolute approval deadlines |Python stdlib; actual notice duration required
+|`skills/kicad-enclosure-step/scripts/inventory_models.py` |Find missing/unresolved part models |Python stdlib
+|`skills/kicad-enclosure-step/scripts/kicad_sexpr.py` |Parse/edit KiCad model-bearing structure |Internal helper; not a general EDA engine
+|`skills/kicad-enclosure-step/scripts/export_step.py` |Temporary board model mapping, export/render |KiCad CLI; verifies missing-model warnings
+|`skills/kicad-enclosure-step/scripts/step_report.py` |STEP solid bounds and sections |CadQuery
+|`skills/kicad-enclosure-step/scripts/simple_model.py` |Build simple envelope models from specifications |CadQuery
+|`skills/kicad-enclosure-step/scripts/verify_placement.py` |Compare per-component STEP/footprint bounds and side |CadQuery and KiCad; visual orientation review still needed
+|===
+
+== What is not installed by this clone
+
+Konnect, Freerouting, kicad-happy, CadQuery and pinned CAM packages are separate dependencies. Tool/skill existence in this directory does not imply availability or verified results. Start with installed native KiCad checks; add only what an experiment needs. A browser/mail connector matters for supplier interaction, not local routing.
+
+== Tests and provenance
+
+`tests/` contains retained upstream helper tests, adapted repository checks and our harness checks. Run relevant suites after changes; dependency-based skips are recorded as skips. `provenance/upstream-files.json` identifies the input snapshot and `document-map.json` explains the documentation migration. The original example's machine/manufacturing artifacts remain unchanged; translated explanations live in guides.

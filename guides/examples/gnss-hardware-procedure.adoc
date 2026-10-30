@@ -1,0 +1,38 @@
+= Upstream GNSS bring-up procedure: reference only
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream test README/results. Historical state: not tested; boards were in transit. No errata recorded. This is not the bring-up plan for our board families. The owner operates physical board/supply/instruments; the agent prepares procedures and records reported measurements. Keep frozen release files unchanged.
+
+== Criteria, equipment and privacy
+
+Both assembled boards must individually complete power, UART, 3D fix, PPS and I2C steps. Visual/short checks are prerequisites; reset is optional. TTFF is recorded three times without a pass threshold. Power current must remain below the chosen limit, without overheating and consistent with datasheet operation. UART needs valid checksums and a UBX query response; PPS is 1 Hz after fix; I2C needs ACK/data at 0x42.
+
+Use current-limited 3.3 V supply, meter, 3.3 V USB-UART and passive 50-ohm MHF-I-compatible antenna. Scope/logic analyzer and 3.3 V I2C host are optional equipment but establish stronger evidence; u-center 2 or suitable terminal can be used. Raw NMEA/UBX contains location data: keep logs/screenshots private and report only fix status, satellite count, maximum C/N0 and TTFF with generic site description.
+
+== Power sequencing
+
+Supply and logic are 3.3 V only. The antenna receives no power. Backup supply is absent; upstream treats complete-power-cycle acquisitions as cold starts. PPS LED alone does not establish fix.
+
+Do not drive unpowered module I/O; datasheet input maximum is V_IO+0.3 V. Connect ground, power the board, then connect signals. Before every shutdown disconnect all UART/I2C/other powered signals; ground can remain. I2C host pullups must also be 3.3 V.
+
+== Procedure
+
+. Unpowered visual inspection: inspect U1 edges, fine-pitch D1 and J1 for bridges/misalignment; compare D2/D3/Q1/U1 orientation with assembly drawing; verify headers insert from bottom and solder on top.
+. Measure TP1 3V3 to TP2 GND resistance. C3 10 uF can cause a rising reading; investigate a persistent near-short rather than powering it. Also check no direct supply shorts to TX/RX/SDA/SCL. Record settled readings.
+. Set 3.3 V and initial 100 mA current limit (protective setting, not acceptance current). Connect supply/ground without host signals. Observe power LED/current; stop on current limiting. After ten seconds record current and assess abnormal heating. Compare acquisition/tracking datasheet currents; the two 2.2-kohm LED circuits add roughly 1 mA.
+. With board powered, connect UART ground then module TX to adapter RX and module RX to adapter TX, confirming actual header pins. Use 9600 8N1. Verify NMEA checksum using a tool or XOR characters between `$` and `*` and compare the two hex digits. Legible text is not checksum proof. Query UBX-MON-VER and record response. Disconnect signals before shutdown.
+. In open sky with passive antenna, disconnect signals, power off for at least ten seconds, power on and start timer, then reconnect signals. First 3D fix requires GGA quality above zero AND GSA navMode 3; RMC A alone can be 2D. Record TTFF, used satellites and highest GSV C/N0; repeat three times per board. Describe antenna/orientation/obstruction; compare datasheet figures without using a universal TTFF threshold.
+. After fix, measure TP6 PPS at 1 Hz and record pulse width; D3 should follow. Without instruments record explicitly “visual LED observation only”, not a measured pulse-width result.
+. Power board, connect I2C ground then SDA/SCL, noting on-board 4.7-kohm pullups. Scan for 0x42 ACK; registers 0xFD/0xFE give available bytes (0xFD high byte), 0xFF yields data stream. Record byte count and parseable NMEA/UBX. Disconnect all signals before shutdown.
+. Optional: briefly pull RESET_N low and release; expect NMEA restart. Leave SAFEBOOT_N alone unless deliberately performing a documented recovery operation.
+
+== Results and errata
+
+All original result cells remain NOT_RUN: visual check, supply resistance, current/temperature, UART checksum/MON-VER, three TTFF runs, satellites/C/N0, PPS, I2C and optional reset for both boards. Environment fields (date, owner, supply, UART, antenna, generic location and firmware) were blank. Only actual measurements can change that status.
+
+Record any later erratum as symptom, affected board/reference, evidence, diagnosis and correction (part replacement, wire change or next revision). A new manufacturing revision belongs in a new directory.

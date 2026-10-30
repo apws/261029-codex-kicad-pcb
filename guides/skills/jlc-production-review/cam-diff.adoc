@@ -1,0 +1,104 @@
+= CAM comparison tools and status contract
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream `skills/jlc-production-review/references/cam-diff.md`. Scripts are under `skills/jlc-production-review/scripts/`; they analyze local inputs, do not edit them and do not connect to the network.
+
+== Environment
+
+Use Python 3.12 and `requirements-cam.txt` in a virtual environment. `render_compare.py` uses gerbonara/Pillow; the other two image tools use Pillow. Transitive packages are pinned. No gerbv or KiCad is needed for rendering, although native Gerber Viewer is useful for review and pcbnew is needed to generate net-named holes. Upstream tested dependencies on Windows/Linux; rerun tests when changing them.
+
+Install separately when CAM review is needed (Python 3.12 must already be available):
+
+[source,bash]
+----
+python3.12 -m venv .venv-cam
+.venv-cam/bin/python -m pip install -r skills/jlc-production-review/scripts/requirements-cam.txt
+.venv-cam/bin/python -m unittest discover -s tests -v
+----
+
+Use the virtual environment Python for the following CAM commands. This environment has not been installed during bootstrap.
+
+== Status contract
+
+PASS/0 means the declared scope completed without unresolved findings. WARNING/1 means differences or unverified upload identity require review. INCOMPLETE/2 means missing, ambiguous or unsupported data; ERROR/2 means input/execution failure. Always inspect current JSON `schema_version`, `status`, `scope`, `issues` and exit code. Some argument/output failures produce no new JSON; never substitute a stale report. Downstream analysis of incomplete inputs may provide diagnostic images but cannot establish full PASS.
+
+Use a new or empty output directory outside the sources. `render_compare` PASS covers input coverage and rendering only. Any pixel difference makes `pixel_compare` WARNING; tolerance changes visualization/classification, not whether differences exist. Inner-removal PASS applies only to selected inner-layer heuristic analysis; no inner layers is not a useful pass. None proves connectivity, fabrication tolerance, hardware function or production approval.
+
+== Pipeline
+
+[source,bash]
+----
+python3 skills/jlc-production-review/scripts/render_compare.py --original release/gerbers.zip --factory factory/production.zip --offset auto --out private/review-01
+python3 skills/jlc-production-review/scripts/pixel_compare.py --renders private/review-01
+python3 skills/jlc-production-review/scripts/check_inner_removals.py --renders private/review-01
+----
+
+Outputs include `layer-summary.json`, original/CAM PNGs, full-panel previews, difference/comparison PNGs, `pixel-summary.json`, inner-check PNGs and `inner-check.json`.
+
+== Rendering, mapping and drill checks
+
+Layer pairing recognizes KiCad names/extensions and JLC extensionless names. All aliases are considered; ambiguous matches fail rather than selecting the first. `--pair Label=original-pattern,factory-pattern` overrides mapping. Patterns with `/` match relative paths; otherwise they match basenames. Top copper, bottom copper and outline are required. Any layer present on either side needs a partner; unmatched CAM inputs are incomplete. PTH/NPTH drill inputs are combined without guessing among duplicate basenames. `--only-pairs` supports diagnostics, not complete PASS.
+
+`--omit-layer F_Paste=reviewed-separately` records an exclusion but leaves overall coverage incomplete. Supply separate stencil comparison evidence. Rotation is counterclockwise about origin, applied before translation. `--offset DX DY` sets millimetres; auto estimates from holes and errors on multiple candidate placements. The transformed original outline centreline defines the comparison window; default resolution is 40 px/mm.
+
+Drills match one-to-one. Moved holes exceed default `--moved-tol 0.005` mm; missing holes, extra inside/outside holes and diameter changes are reported. Tied candidates are incomplete. Slots are counted but geometry is unsupported, therefore incomplete. Parser warnings, empty artwork/drills, missing outline and manually restricted windows cannot give full PASS.
+
+`--check-upload` compares exact relative member paths/hashes in the factory's original-upload copy. Missing/extra/changed members are incomplete. If the factory repackages directory roots, explicitly normalize a separate copy; the tool does not guess basenames. Without upload check, overall status is at least WARNING and upload status is NOT_RUN.
+
+== Pixel and inner-layer analysis
+
+Grey pixels exist on both sides, red only in CAM, blue only in original. Orange boxes highlight differences exceeding display tolerance. JSON records total and above-tolerance added/removed area, with region centres in both original and factory coordinates. Copper pixels mean metal; mask pixels mean openings; silk pixels mean ink.
+
+Inner checking flood-fills original copper from each hole. A region confined to `--max-pad-mm` and containing only one hole is classified as an isolated unused pad. Removed copper outside such pads or missing connected-pad centres is suspicious. With verified `--holes`, `--plane-nets GND` highlights plane-net holes losing centre copper.
+
+Custom hole coordinates must match original drill data uniquely, completely and one-to-one within 0.000001 mm. Missing/extra/duplicate/mismatched records give INCOMPLETE; diagnostics fall back to original hole coordinates and do not trust net labels. `custom_holes_verified` records the result. Both images must cover the declared window/resolution; identically cropped images cannot pass.
+
+== Useful options and self-comparison
+
+`--rotate 90`, `--offset 23 17`, `--pair In1_Cu=*-In1_Cu.*,l2`, `--margin 0.5`, `--ppmm 80`, and `--check-upload uploaded-original.zip` support common cases. Doubling resolution roughly quadruples work/memory.
+
+[source,bash]
+----
+python3 skills/jlc-production-review/scripts/render_compare.py --original gerbers.zip --factory gerbers.zip --check-upload gerbers.zip --out private/selftest
+python3 skills/jlc-production-review/scripts/pixel_compare.py --renders private/selftest
+----
+
+Expected self-comparison: zero offset, complete zero-error drill matches and zero pixel differences.
+
+== Generate net-named holes
+
+Run with KiCad Python. Convert native coordinates to Gerber coordinates using the drill/place origin and upward Y. If exports used absolute origin, use zero origin instead. The upstream example rounded to four decimals; verify alignment against the stricter hole matcher rather than assuming that precision suffices for every project.
+
+[source,python]
+----
+import json, sys, pcbnew
+board = pcbnew.LoadBoard(sys.argv[1])
+o = board.GetDesignSettings().GetAuxOrigin()
+ox, oy = pcbnew.ToMM(o.x), pcbnew.ToMM(o.y)
+def xy(p):
+    return pcbnew.ToMM(p.x) - ox, oy - pcbnew.ToMM(p.y)
+holes = []
+for t in board.GetTracks():
+    if t.GetClass() == "PCB_VIA":
+        x, y = xy(t.GetPosition())
+        holes.append({"x": x, "y": y, "net": t.GetNetname()})
+for fp in board.GetFootprints():
+    for pad in fp.Pads():
+        if pad.HasHole():
+            x, y = xy(pad.GetPosition())
+            holes.append({"x": x, "y": y, "net": pad.GetNetname(),
+                          "ref": fp.GetReference() + "-" + pad.GetNumber()})
+with open(sys.argv[2], "w", encoding="utf-8") as f:
+    json.dump(holes, f, indent=2)
+----
+
+== Limits and private outputs
+
+At 40 px/mm, one pixel is 0.025 mm; default display tolerance is one pixel. Numerical drill movement is independent of raster resolution. No electrical net proof, DRC, annular-ring or mask-web validation is performed. Transforms support rotation/translation, not scaling/mirroring; bottom Gerbers already use top-view coordinates. Inspect parser warnings before blaming factory changes. Outline widths may differ; judge dimensions and cut annotations instead of raw pixel area. ODB++, V-cut semantics, process marks and assembly placement are not interpreted.
+
+Outputs can contain private factory member names/order identifiers and manufacturing images. Keep them outside public Git. See link:procedure.adoc[the review procedure] for interpretation.

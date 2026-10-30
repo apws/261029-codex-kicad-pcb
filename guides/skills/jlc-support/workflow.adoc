@@ -1,0 +1,51 @@
+= Supplier communication workflow
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream `skills/jlc-support/SKILL.md`. The active Codex entry point is link:../../../skills/jlc-support/SKILL.md[the skill]. Goal: obtain verifiable answers without accidentally approving production, changes or fees.
+
+== Authorization and account
+
+Drafting is preparation. Sending messages, uploading/submitting orders, accepting terms/fees/compensation, approving production/placement and requesting design changes need the user's actual authorization. Upstream additionally required individual approval for factory downloads and allowed only scoped, time-bounded preauthorization of status inquiries and purely technical clarification. Preserve these historical boundaries when applying the original process; our current session's explicit authorization takes precedence.
+
+Record any preauthorization scope/expiry in WORKLOG; every inquiry includes a boundary sentence. No inferred acceptance of design changes, costs or manufacturing. Use the order's registered mailbox and original thread; verify the connector account before sending. The user handles payment and personal customs information.
+
+== Verify before drafting
+
+Read detailed order status, not just its headline badge. Check the correct mailbox including spam and the last support conversation. Record timestamp/timezone and old/new order/cart identifiers privately. Verify “email sent” or “processed” claims against actual evidence; upstream support agents contradicted each other.
+
+When a browser/mail connector is unavailable, use user-provided status and correspondence and explicitly label the evidence as supplied rather than directly verified. Codex tools vary by client; inspect available tools rather than assuming a browser extension or mailbox exists.
+
+== Message structure
+
+. Action-oriented subject and order reference.
+. Greeting and one-line background with verified status/time.
+. One sentence explaining impact.
+. Numbered questions with specific answers where possible.
+. Fallback: responsible team and next-update time/timezone if completion cannot be promised.
+. Boundary: “This is not approval of DFM/production, design changes or extra fees. Please keep manual confirmation.”
+. Thanks and signature.
+
+Make the first message self-contained because support staff rotate. Use absolute dates across midnight. Keep one issue per thread; refund/compliance questions get separate threads. Follow up only on unanswered points. Quote contradictory website text and seek a concrete scope such as “all five boards”. Do not accept compensation as resolution while the underlying issue is unresolved.
+
+== Technical questions and channels
+
+Specify coordinate frame and mm transform, explain uncertainty, request annotated evidence and avoid changing a correct design just to match a viewer readout. Put process requirements in both order notes and an assembly PDF visible to CAM engineers.
+
+Chat suits quick status/clarification; finish with a verifiable owner/update commitment. Email gives written evidence and attachments in the registered thread. Sales/escalation contacts are for failed channels or multi-team coordination; summarize established status first.
+
+== Deadlines and stopping
+
+Use `skills/jlc-support/scripts/deadline.py --received "<timestamp>" --tz +08:00 --hours 72` with the actual notice's timezone/duration. Exit 0 means not due, 1 overdue and 2 input error. Record its absolute deadline in WORKLOG. Historical numbers are in link:deadlines.adoc[deadlines].
+
+Upstream spaced unsolicited progress reminders at least four hours apart without a promised update; that interval is not sending authorization. A specific promised update controls timing. Notify the user about substantial progress, failures, approaching approval deadlines or required decisions. Stop on final rejection, completed deliverable, lost browser/mail access or a user pause. “Will send” is not completion.
+
+== Deliverables and evidence
+
+Provide verified sources/time, authorization category, recommended channel, deadline/time remaining and complete English draft. Save raw correspondence privately; screenshots often contain personal data. The public work log uses role names and sanitized references. Agent-written summaries do not replace original evidence.
+
+Templates: link:templates.adoc[seven message forms]. Lessons: link:pitfalls.adoc[pitfalls] and link:case-study.adoc[case study].

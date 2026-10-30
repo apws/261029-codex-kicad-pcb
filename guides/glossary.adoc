@@ -1,0 +1,72 @@
+= PCB workflow glossary
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream `docs/glossary.md` and `CONTEXT.md`.
+
+== Design terms
+
+Schematic:: Components and electrical connections, stored in `.kicad_sch`.
+PCB layout:: Physical placement and copper routing, stored in `.kicad_pcb`.
+Symbol:: Schematic representation of a part.
+Footprint:: Physical pad/outline definition; match the exact purchased part.
+Net:: Electrically connected pins, such as GND or 3V3.
+Netlist:: Connectivity listing used to compare intended circuit changes.
+ERC:: Electrical Rules Check of schematic connection rules.
+DRC:: Design Rules Check of PCB geometry/connectivity against configured rules.
+Decoupling:: Local supply capacitance near IC power pins.
+Via:: Plated connection between copper layers.
+Annular ring:: Copper around a drilled hole.
+Zone/pour:: Filled copper area, often ground.
+Edge.Cuts:: Finished board outline layer.
+Stackup:: Layer materials and thicknesses.
+DNP:: Do Not Populate; present in design but omitted from assembly.
+Test point:: Accessible measurement pad or connection.
+
+== Manufacturing terms
+
+Gerber:: Layer artwork supplied to the fabricator.
+Excellon/drill file:: Hole coordinates and drill sizes.
+PTH/NPTH:: Plated/non-plated through holes.
+Solder mask:: Protective coating; artwork usually describes openings.
+Silkscreen:: Printed labels and markings.
+Paste/stencil:: Apertures for applying solder paste.
+BOM:: Bill of Materials: references, values, footprints and supplier parts.
+CPL:: Component Placement List: position, rotation and side; also pick-and-place file.
+Reference/designator:: Identifier such as R1, C3 or U1.
+Pin 1:: Orientation reference for a component.
+PCB/PCBA:: Bare board / assembled board.
+SMT/THT:: Surface mount / through-hole assembly.
+MPN:: Manufacturer part number.
+C-code:: JLC/LCSC supplier identifier such as C14663.
+Basic/Extended:: Assembly inventory categories with different setup costs. The upstream October 2026 observation noted Preferred Extended fee relief in some Economic assembly; check current terms.
+Economic/Standard:: JLC assembly tiers with differing side, size and package capabilities.
+DFM:: Design for Manufacturing review.
+Rails:: Temporary handling strips outside the finished board.
+Panel:: Multiple boards processed together.
+V-cut:: Scored groove for separating panels.
+Fiducial:: Optical alignment mark.
+HASL/ENIG/OSP:: Solder leveling / immersion gold / organic solderability protection. Each has assembly and storage tradeoffs.
+
+== Project vocabulary
+
+Fixed release package:: Exact version sent to manufacturing; never silently updated. Avoid calling an arbitrary candidate “final”.
+Working copy:: Mutable copy where edits/refill-save are permitted.
+Candidate:: Proposed next design, not yet accepted as a release.
+Verification:: Pre-release file checks/review, frozen with the release.
+Hardware results:: Post-delivery measurements and errata, kept outside the release.
+WORKLOG:: Newest-first ownership, changes, verification and stopping-point record.
+Writer:: Sole current person/agent/server modifying the design.
+PASS:: The particular check completed its declared scope without unresolved findings; not universal electrical approval.
+WARNING:: Analysis completed with differences needing review.
+INCOMPLETE/ERROR:: Missing/unsupported inputs or execution failure; never a pass.
+Production file:: PCB CAM output awaiting approval, distinct from placement confirmation.
+Parts placement confirmation:: PCBA part identity, position, angle and polarity review.
+Progress inquiry:: Ask for status, owner or next update; no implied acceptance.
+Technical clarification:: Ask why or request annotated evidence; does not approve a change.
+Accepting factory changes:: Explicit agreement to CAM/design changes, cost, compensation or timing.
+Boundary sentence:: Correspondence statement that a question is not production/change/fee approval.

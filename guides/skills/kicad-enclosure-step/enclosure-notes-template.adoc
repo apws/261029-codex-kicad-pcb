@@ -1,0 +1,29 @@
+= Enclosure handoff template
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+Source PCB/revision/commit: <identify>. Enclosure geometry only; not fabrication artwork. Source board unchanged.
+
+== Files and reproduction
+
+* `<Board>.step`: board and modeled components, excluding DNP; list reference objects separately.
+* `preview-top.png`, `preview-bottom.png`: orientation views.
+* `enclosure-step.json`: model/export mapping.
+* `models/`: additional geometry and dimension specifications.
+* Reproduce with `export_step.py enclosure-step.json --render preview` from the skill scripts.
+
+== Coordinates
+
+Units mm; lower-left board bottom origin; +X right, +Y up, +Z front. Board x 0–<width>, y 0–<height>, z 0–<thickness>. For a top-left downward-Y board frame, STEP coordinates are (x, height-y). Whole assembly bounds: <x/y/z>.
+
+== Mechanical features
+
+Record front maximum and back minimum with references, USB/connector openings and cable exit/plug-shell clearances, lever width/travel, antenna metal-free volume, protruding pins/posts, mounting-hole positions and screw/standoff limits. State each position and height range numerically.
+
+== Sources and verification
+
+List reference, part, source, alignment changes, dimensional conflicts and license. Record `verify_placement.py` count/date/results. Mark unknown dimensions for physical measurement. Opening/latch dimensions must be confirmed on real parts; simplified envelopes are not manufacturer mechanical drawings.

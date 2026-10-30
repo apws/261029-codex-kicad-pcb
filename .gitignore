@@ -1,0 +1,42 @@
+# KiCad autosave / backup / lock / per-user UI state
+*-backups/
+*.kicad_pcb-bak
+*.kicad_sch-bak
+_autosave-*
+*.lck
+~*.lck
+fp-info-cache
+*.kicad_prl
+
+# Local tool config and outputs that contain absolute paths (see guides/workflow/kicad-tools.adoc)
+.mcp.json
+tools/konnect/config.toml
+response.json
+
+# Python / Node
+__pycache__/
+*.pyc
+.venv/
+.deps/
+.venv-deps/
+.pip-cache/
+node_modules/
+
+# Local outputs
+build/
+out/
+tmp/
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Private design experiments and local tool binaries
+experiments/
+private/
+dist/
+*.jar
+*.log
+
+.venv*/

@@ -1,0 +1,39 @@
+= Collaboration, ownership and handoff
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+Adapted English translation of upstream `docs/workflow/collaboration.md`. The upstream supports one person and one or more agents over many sessions. Our active workflow uses Codex; cross-vendor handoff is optional historical context.
+
+== One writer
+
+One person, agent or server writes a working directory and KiCad editor at a time. Before handing over, stop writes, save state and record the stopping point. Independent parallel work needs separate worktrees and nonoverlapping ownership. External boards, serial ports and instruments also need a single owner.
+
+== Project entry points
+
+`README.adoc` describes current state, the active design/release and remaining work. `WORKLOG.adoc` records newest entries first: owner, scope, changes, verification, stopping point and next step. New corrections supersede older statements. Historical next steps are plans, not new authorization. Changing order/review status belongs in a dedicated report; the work log links to it.
+
+== Resuming work
+
+. Read README and identify the task's subproject and version.
+. Read recent relevant log entries; identify ownership and pending decisions.
+. Inspect exact target files and Git changes. Identify the board, path, revision and scope before editing.
+
+== Before and after changes
+
+Make a complete recoverable copy including project libraries, or an inspected commit. Hashes identify files but cannot restore them. A new worktree excludes uncommitted changes. Never run an initial board-generation script over a routed finished design.
+
+After editing, compare netlists and intended differences; run native ERC/DRC and inspect files. Schematic connectivity, physical pinout, RF behavior, power choices and values need manufacturer evidence. Agent summaries are not primary evidence. Mark skipped or timed-out work explicitly, for example SPICE `SKIP`.
+
+== Review
+
+Upstream asks another agent to review fixed snapshots at major milestones, with at most two rounds. The reviewer supplies evidence and the owner decides corrections. Read-only reviewers should not have write tools or unreviewed hooks. Failed, partial, empty or quota-limited reviews are incomplete, never passed.
+
+Our adaptation permits a separate Codex review or human review when warranted; it does not automatically launch agents for every task. One model can repeat its own mistaken assumptions, so reviews supplement native checks and datasheets.
+
+== External actions
+
+Upstream requires explicit user decisions for payment, orders, submissions, correspondence, production/placement approval, publication, accepted fees and design changes. It permits scoped, time-bounded preauthorization for progress inquiries and purely technical clarification. Our local experiment authorization covers its necessary reversible preparation and candidate changes; it does not authorize external commitments. See the supplier skill for message boundaries.

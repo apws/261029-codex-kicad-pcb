@@ -1,0 +1,47 @@
+= JLCPCB ordering and review
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream `docs/workflow/jlc-ordering.md`. Numerical prices, limits, deadlines and Taiwan shipping details are historical September/October 2026 observations, not current quotations or our board defaults. Check https://jlcpcb.com/capabilities/pcb-assembly-capabilities[assembly capabilities], https://jlcpcb.com/help/article/pcb-assembly-faqs[assembly FAQ] and https://jlcpcb.com/help/article/jlcpcb-surface-finish[surface finishes] for the actual order.
+
+== Service and assembly scope
+
+Upstream compared Economic (single-sided, down to 0402) with Standard (one/two-sided, down to 0201, minimum 70 by 70 mm board/panel with rails/fiducials). Tiny DSN0603 ESD parts required the latter in that case. Small boards can be panelized or receive factory rails; rail removal may cost extra. Finished-board quantity is different from panel quantity and units per panel.
+
+Choose bare boards, hand assembly or a suitable JLC assembly tier from our actual parts and quantities. JLC is our preferred manufacturer; the toolkit's manufacturing checks remain useful even when local design/routing uses no JLC service.
+
+== BOM, CPL and part matching
+
+BOM must identify value/comment, designator, footprint and LCSC part number. CPL includes only references actually assembled; remove DNP/test points/fiducials/holes as appropriate. Run `check_bom_cpl.py` and inspect every warning. It checks reference sets, duplicates, supplier-code syntax, coordinates and side, not actual polarity or orientation.
+
+After automatic part matching, inspect manufacturer, full MPN, C-code, package, side, rotation/pin 1, current stock and attrition. Stock availability does not guarantee assembly eligibility: upstream found stocked supercapacitors and batteries excluded from assembly and consignment. Nonstandard processes such as reverse-inserted headers require engineering agreement; a THT capability claim does not settle insertion direction. Do not silently change an agreed assembly process to hand soldering after rejection.
+
+== Cost lessons from the example
+
+For the historical 25 by 36.5 mm four-layer board, five PCBs/two assemblies, the quote fell from roughly USD 174 to 90 by using top-only assembly, customer-soldered headers, factory rails and OSP. Historical PCB quotes were about USD 46 for ENIG with custom panel, 26 for ENIG with factory rails, 14 for lead-free HASL and 9 for OSP. Both quotes already assembled only two of five boards.
+
+HASL flatness can be unsuitable for tiny pads. OSP handling/storage and later hand soldering require attention; upstream cited approximately three months unopened storage and prompt soldering after opening. These are contextual observations; choose finish for our process and current supplier advice.
+
+== Before submitting
+
+Retain manual `Confirm Production file` and `Confirm Parts Placement` review. Put all process requirements in order notes and assembly PDF: depaneling scope, unusual parts, engineering clarifications and manual approval. `Review Before Payment` was available; historical review hours were Monday–Saturday 09:00–18:00 GMT+8, quoted 10 minutes to four hours. Saving a cart can change its ID; keep old/new references in private correspondence.
+
+Detailed quotations may exclude advanced options from the headline total. Coupons apply only to eligible items/regions and may be applied at payment. Destination taxes/clearance can be additional. The user handles payment and personal customs data and authorizes external submissions/messages/approvals.
+
+== After payment
+
+Detailed stages may be Reviewing, Data Preparation, confirmation files and production. A headline “In Production” can conceal a pending detailed stage. PCBA DFM may start only after payment. Upstream PCB emails requested review within 48 hours to avoid delay; PCBA placement emails said production could proceed after 72 hours without confirmation. These are different notices: calculate the actual email's absolute deadline immediately, including timezone.
+
+Compare factory CAM against the exact submitted package using the production-review skill. Review placement separately. Factory holidays can magnify delay; a banner advised ordering 3–5 days ahead. A nominal 10–60 minute review took over a day in the recorded case. Approved/paid orders were later cancelled and required reordering; include recovery time in planning.
+
+== Historical Taiwan logistics appendix
+
+This preserves upstream context only; our destination is not assumed to be Taiwan. The September 2026 example used SF Express, quoted 3–5 working days and about USD 5 for the small order. Total lead time includes fabrication, holidays and transport.
+
+The checkout required customs identity data and did not reuse it after reorder. Name/phone had to match the recipient's documentation. Upstream cited Taiwan real-name express-clearance rules and prior authorization through EZ WAY from 2026-03-01: the recipient reviews goods and authorizes the broker before clearance. These are historical legal/platform statements, not current guidance for our orders. Consult the actual checkout, carrier and https://web.customs.gov.tw/[Taiwan Customs] if relevant.
+
+The user enters identity, address, phone and payment data directly. Keep checkout screenshots and original correspondence private. On receipt, document package condition, count bare/assembled boards and supplied parts, and inspect before power-up. Keep hardware results outside the frozen package.

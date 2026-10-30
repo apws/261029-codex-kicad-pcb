@@ -1,0 +1,34 @@
+= Routing experiment report
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+== Inputs and intent
+
+Date/timezone: <unknown>. Board revision: <unknown>. Writer: <unknown>.
+Baseline manifest: <path>. Candidate: <path>. Scope and permitted changes: <description>.
+Tool versions, router hash and exact invocation: <record>. DSN/SES hashes: <record>.
+
+== Comparison
+
+[cols="2,1,1,2",options="header"]
+|===
+|Measure |Before |After |Evidence/interpretation
+|Unconnected items |unknown |unknown |Native DRC
+|DRC errors/warnings/exclusions |unknown |unknown |All findings explained
+|Schematic parity |unknown |unknown |Matching filenames and native report
+|Via count / track length |unknown |unknown |Geometry snapshot, not full quality score
+|Fixed footprints/pad nets |unknown |unknown |Comparison
+|Locked and critical copper |unknown |unknown |Exact comparison plus visual review
+|Outline/zones/custom rules |unknown |unknown |Separate inspection
+|Elapsed time/manual corrections |unknown |unknown |Logs
+|Return paths/timing/power suitability |unknown |unknown |Engineering review
+|===
+
+== Result
+
+Status: NOT_RUN / INCOMPLETE / REJECTED / ACCEPTED_FOR_EXPERIMENT.
+Explain regressions, limitations and next experiment. An accepted route experiment is not manufacturing approval or hardware validation.

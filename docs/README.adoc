@@ -1,0 +1,13 @@
+= Internal documentation timeline
+:leveloffset: +2
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+* link:261029-01-project-summary.adoc[2026-10-29: project purpose and use].
+* link:261029-02-upstream-analysis.adoc[2026-10-29: source analysis, Codex-only architecture and routing direction].
+* link:261029-03-bootstrap-validation.adoc[2026-10-29: import, adaptation and validation results].
+
+Maintained instructions belong in link:../guides/README.adoc[guides/]. New internal records use dated English AsciiDoc filenames; update this index when adding one.

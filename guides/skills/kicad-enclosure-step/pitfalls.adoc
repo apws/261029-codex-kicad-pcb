@@ -1,0 +1,31 @@
+= STEP alignment and export pitfalls
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream October 2026 observations on a 95 by 50 mm board with modules, GNSS patch and back-side 18650 holder. Recheck every actual part.
+
+== Origin and orientation
+
+A downloaded STEP may not share its paired footprint origin; upstream observed a 2.7 mm discrepancy on a LoRa pair. Compare model body/pads/connectors against the actual project footprint. Some models have Y as the thickness axis. KiCad 10 config rotation `[90,0,0]` behaved as a physical -90-degree X rotation; converting Y-up to Z-up required -90 in that case. Verify, do not generalize without checking.
+
+A 90-degree module can swap 9.7/10.1 mm bounds; a 180-degree error may retain the same bounds. Check feed electrodes, lever and connector direction against Fab geometry.
+
+== Heights
+
+Observed model versus datasheet discrepancies included LoRa 5.0 versus 3.87 mm, GNSS 2.2 versus typical 2.5/max 2.7 mm, and switch extension 1.5 versus 2.0 mm. Board CAD stackup 1.6 mm conflicted with a 1.25 mm physical model. Use the appropriate primary dimensions or measurement and record the discrepancy.
+
+A patch model bottom at z=0.72 floats unless corrected; z=-0.53 to +0.48 indicates a centre-height origin, not a bottom origin. Inspect before positioning.
+
+== Back-side and through-board geometry
+
+Let KiCad flip back-side models. Battery-holder locating posts/header pins can protrude roughly 2 mm through the board and require enclosure space. Sections can help infer a battery centreline; the example's three points gave a 9.58 mm radius for an 18.6 mm battery reference. Mark inferred/reference geometry explicitly.
+
+== Export and download
+
+Use `--no-dnp` when omitted parts should not appear. Prefer resolved absolute model paths or KiCad model variables; `${KIPRJMOD}` can point to the temporary copy during export. KiCad CLI can warn about missing models without failing; `export_step.py` treats “Could not add 3D model” as exit 2. CadQuery resave can drop colors; config transformations preserve originals.
+
+GrabCAD may require the user to log in to the exact browser used. “Download files” can wait while preparing a ZIP; individual links may behave differently. Use a fresh directory per source and read model data only.

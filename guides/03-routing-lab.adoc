@@ -1,0 +1,86 @@
+= Routing laboratory: Codex, KiCad and Freerouting
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+== The question we want to answer
+
+Can Codex coordinate useful routing iterations for our boards while preserving design intent and making results easy to review? Compare against our previous Java Freerouting experience and manual KiCad work. Do not assume agent-generated trace segments beat a dedicated router.
+
+[cols="1,3,2",options="header"]
+|===
+|Approach |Role |Initial status
+|KiCad interactive routing |Human routes critical geometry with native rule feedback |Manual reference approach
+|Native DSN + local Freerouting + SES |Dedicated routing engine; Codex handles preparation and evaluation |Preferred first automated experiment
+|Codex scripts adding tracks |Precise known geometry or constrained repair |Needs explicit path planning and DRC iteration
+|Konnect MCP |Convenient structured operations and live PCB state |Optional, archived upstream; pinned-version trial only
+|Other autorouters/MCP services |Possible alternatives |Not evaluated; no superiority claim
+|===
+
+== Establish a fair starting point
+
+Use the same placement, outline, layer count, net classes, locked objects and critical copper for every variant. Prepare a separate unrouted or partially routed candidate with explicit authorization; never strip a finished reference design merely to satisfy an exporter. Record which nets may be routed and which may not.
+
+For 7xsys/7xmod/7xmem, explicitly establish connector standards, power currents, edge rates, memory/bus timing, termination, length/skew limits, impedance, return paths, layer use and mechanical keepouts when applicable. Family names alone supply none of these facts. Do not assume a low clock frequency makes all interconnects slow.
+
+== Export using native KiCad
+
+[source,bash]
+----
+/usr/bin/python3 tools/pcb-lab.py export-dsn --board experiments/7xmod-a/design/Board.kicad_pcb --out experiments/7xmod-a/routes/run-01
+----
+
+This calls KiCad's installed `pcbnew.ExportSpecctraDSN`, records input/output hashes and does not save the source board. Its behavior is version-bound. Inspect the DSN in the selected router: board outline, layers, pads, existing routes, net classes, widths, clearances and keepouts. Do not assume every `.kicad_dru` rule survives DSN translation.
+
+== Run local Freerouting
+
+Install or select a trusted local Freerouting release separately, record its version/JAR SHA-256 and inspect its help. The toolkit does not download it or use the public routing API. Example invocation from the official CLI documentation, subject to the selected release's actual flags:
+
+[source,bash]
+----
+java -jar /path/to/freerouting.jar -help
+java -jar /path/to/freerouting.jar -de experiments/7xmod-a/routes/run-01/Board.dsn -do experiments/7xmod-a/routes/run-01/Board.ses -mp 10 -mt 1 -da --gui.enabled=false
+----
+
+`-de` selects input, `-do` output, `-mp` limits passes, `-mt` controls optimization threads, and `-da` disables documented analytics. This is a local CLI example, not a guarantee of network isolation. Capture stdout/stderr and elapsed time; use a separate directory/configuration per variant. Confirm output was newly produced and routing actually completed.
+
+Official source checked 2026-10-29: https://github.com/freerouting/freerouting/blob/master/docs/command_line_arguments.md[Freerouting CLI]. Newer releases may change switches or Java requirements. The local host's Java version does not prove compatibility with every release. Existing GUI use is also valid: open DSN, route and export SES.
+
+== Import into a new complete candidate
+
+[source,bash]
+----
+/usr/bin/python3 tools/pcb-lab.py import-ses --board experiments/7xmod-a/design/Board.kicad_pcb --ses experiments/7xmod-a/routes/run-01/Board.ses --dest experiments/7xmod-a/candidates/run-01
+----
+
+The harness copies the entire input project directory, imports through native KiCad, checks footprint/pad snapshot equality and saves under the original board filename. This preserves matching `.kicad_pro` and `.kicad_sch` names for parity checks. It does not establish that all original tracks, zones, custom rules or locked geometry survived correctly. The result is explicitly `IMPORTED_NOT_VALIDATED`.
+
+IMPORTANT: SES import is not guaranteed to be additive. Our KiCad 10.0.7 smoke test with an empty synthetic session changed existing tracks/vias and then failed native acceptance checks. This candidate was rejected. Always preserve the complete source and inspect the result; even a syntactically accepted session can damage existing routing.
+
+Refill and save zones on the candidate only, after checking the installed CLI help:
+
+[source,bash]
+----
+kicad-cli pcb drc --refill-zones --save-board --all-track-errors --schematic-parity --severity-all --exit-code-violations --format json -o experiments/7xmod-a/reports/refill-run-01.json experiments/7xmod-a/candidates/run-01/Board.kicad_pcb
+/usr/bin/python3 tools/pcb-lab.py check --board experiments/7xmod-a/candidates/run-01/Board.kicad_pcb --out experiments/7xmod-a/reports/run-01
+/usr/bin/python3 tools/pcb-lab.py compare experiments/7xmod-a/reports/baseline/geometry.json experiments/7xmod-a/reports/run-01/geometry.json
+----
+
+The first command may report violations; read them. Do not chain success-only shell commands that prevent collecting diagnostics. The compare command checks its recorded fields, including exact preservation of previously locked track records; its scope does not cover every KiCad property. Inspect outlines, zone boundaries, arc/via details, project/custom rules and critical routes separately.
+
+== Evaluate, then iterate
+
+Use the routing report template. Record remaining unconnected items, errors/warnings/exclusions, track length, via count, runtime and manual corrections. Visually review power paths, return-current continuity, connector escapes, dense pad exits and critical nets. Check differential/length constraints with their actual KiCad rules and appropriate analysis; route completion alone does not establish timing or signal integrity.
+
+Try one change at a time: permitted layer use, routing effort, selected placement or explicit constraint correction. Keep the starting board and tool version fixed for meaningful comparisons. A lower via count is not automatically better if return paths or timing degrade.
+
+== Optional MCP comparison
+
+Only after the native route works, try a pinned Konnect executable with the explicit config in `scripts/konnect/config.example.toml`. Follow link:workflow/kicad-tools.adoc[the tool guide]. Measure whether it saves time and preserves native design information. The upstream verified single trace insertion is not a demonstrated autorouter. If another server is tried, give it a separate experiment and one writer at a time.
+
+== Current evidence boundary
+
+The toolkit provides native DSN export and SES import wrappers plus checks. Actual Freerouting completion, quality on our boards, and MCP editing are separate validation milestones. See the dated validation note for what was exercised during bootstrap. No GNSS-specific routing rules are inherited.

@@ -1,0 +1,47 @@
+= Readable schematics and layouts
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream readable-schematic-layout skill. The active entry point is link:../../../skills/readable-schematic-layout/SKILL.md[SKILL.md]. Design for the person debugging with a meter/scope: show supply flow, signal flow and useful measurement points.
+
+== Establish the editing contract
+
+For read-only review, produce findings directly. Before changes establish the authoritative source (generator or native file), active writer (Codex or GUI user), symbol replacement policy, net-name policy, cross-page labels/hierarchy, fallback editing method and reviewer. Reuse decisions already given by the user; ask only for unresolved choices affecting results. If switching to native editing, retire or disable the conflicting generator so it cannot overwrite the result.
+
+== Symbols and fields
+
+Use native recognizable discrete symbols: `Transistor_FET:<MPN>` or `Device:Q_NMOS/Q_PMOS`, `Switch:SW_SPDT/SW_Push`, `Device:Battery_Cell`, `Device:D_TVS`/`Power_Protection:*`, `Device:Antenna_Shield`, `Connector:TestPoint` and standard R/C/L/LED. Avoid generic rectangular boxes for these parts.
+
+Use native IC symbols where available. Upstream verified MAX-M10S, TPS22919DCK and SN74LVC1T45DBV in KiCad 10.0.6. KiCad 10 libraries can use `<library>.kicad_symdir/<symbol>.kicad_sym`; older libraries use a single `<library>.kicad_sym`. Check installed contents rather than assuming a path/version.
+
+Custom IC symbols should put supply above, ground below, inputs left, outputs right, with functional groups and exact datasheet pin names. Mark unused pins deliberately. Replacing a symbol must preserve reference, value, footprint, datasheet, description, MPN/manufacturer/supplier fields and DNP state. Match pin numbers to footprint pads; SPDT common pins, battery polarity and antenna feed/ground can differ between library conventions. Do not alter footprint or circuit merely to make a symbol substitution pass without an authorized design change.
+
+== Wiring and placement on the sheet
+
+Use power symbols for supply/ground. If preserving a nonstandard net name such as VSYS, use a project power symbol whose value yields that name, then confirm the exported netlist. Positive supply points upward; ground downward. Do not put two conflicting power/label names on one net.
+
+Draw actual local wires rather than a label on every pin. Reserve labels for page boundaries or long crossing connections. Put decoupling beside the related supply pin with visible wiring. Avoid wires through symbols, use junctions on T connections, avoid ambiguous four-way crossings, use intentional no-connects and place required power flags at supply entry.
+
+Arrange functional flow left-to-right, supply above and ground below. Group related blocks with titles, align repeated circuits, use 50 mil/1.27 mm grid and orthogonal symbol rotations. Ensure reference/value/label/pin text does not overlap wires or symbols. Put electrical explanations near the circuit, including power sequencing, errata and intentionally unused pins. Label test points with net/expected measurement. Use a larger sheet or hierarchy rather than crowding; root sheets should show block interconnections.
+
+== Prove presentation-only changes preserve the circuit
+
+. Preserve the complete baseline and export its XML netlist.
+. Export the revised netlist with `kicad-cli sch export netlist --format kicadxml`.
+. Run `skills/readable-schematic-layout/scripts/compare_netlist.py base.xml new.xml --names` when names must be preserved; omit `--names` only when intentional renaming is allowed. Require IDENTICAL for presentation-only work and inspect component-field differences.
+. Run full native ERC; explain all warnings/exclusions and resolve unexpected errors.
+. Run `check_pin_pad.py new.xml --pcb Board.kicad_pcb` or `--footprints <directories>` before a PCB exists. Missing pads need correction; extra mechanical pads need explanation. This number-set check cannot prove physical pin functions.
+. Export schematic PDF and render with `pdftoppm -r 110 -png`; inspect every page for readability, wire crossings and annotations. Poppler is a separate dependency; use another PDF viewer if unavailable.
+. Have the fixed candidate reviewed according to the project scope. Repeat checks per sheet rather than waiting until the entire rewrite is finished.
+
+For intended circuit changes, inspect and justify each netlist difference rather than calling them presentation-only. Readability acceptance is not electrical or hardware validation.
+
+== Editing tools
+
+MCP reads current state and performs supported edits; scripts/native CLI judge results. Konnect toolsets include `sch_components`, `sch_wiring` and `sch_hierarchy`; inspect actual schemas. If it cannot preserve custom fields during symbol changes, use an inspected script against the closed file, then the same checks. Without Konnect, use CLI exports for reading and structured file scripts for edits. Do not overwrite an open GUI buffer.
+
+For PCB work read link:layout.adoc[layout principles] and link:konnect-limits.adoc[Konnect limits]. Detailed tool setup is in link:../../workflow/kicad-tools.adoc[the tool guide].

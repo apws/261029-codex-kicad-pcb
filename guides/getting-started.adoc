@@ -1,0 +1,61 @@
+= Getting started: from a first design to a JLCPCB order
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+Adapted English translation of upstream `docs/getting-started.md`. This chapter teaches the original human-assisted workflow. Our automation entry points are link:01-how-it-works.adoc[How it works] and link:02-first-experiment.adoc[First experiment]. The GNSS example was submitted but has no recorded physical validation, and is not recommended as a beginner's first RF board.
+
+== Choose a manageable first board
+
+Upstream suggests a two-layer board no larger than a business card, 0805-or-larger or through-hole parts, common JLC Basic components and either bare-PCB hand assembly or single-sided assembly. Examples include USB-C power plus LED/button, a sensor adapter or a Pico expansion board. RF, fast signals, lithium charging and mains need additional expertise. These are learning suggestions, not restrictions on our future projects.
+
+Ask Codex to identify functional blocks and manufacturer application circuits before drawing. State functionality, power and interfaces. Treat datasheets as evidence and list missing constraints.
+
+== Prepare the tools and project
+
+KiCad 10 is the native EDA tool; Git is strongly recommended. Codex is the assistant. Python runs the checking scripts; the CAM environment is pinned to Python 3.12. `kicad-happy` and Konnect are optional. Keep this toolkit outside the actual board project. Confirm CLI version. Create a native KiCad project, copy our templates, replace placeholders and version the baseline. Read README/current state and WORKLOG/history on each session.
+
+== Schematic and component selection
+
+Start every functional block from manufacturer typical applications. Place symbols, actual wires and power symbols; add LCSC supplier codes to assembled symbols and mark intended DNP parts. Explain every ERC finding. Put appropriate decoupling at each power pin and handle unused pins according to the datasheet.
+
+Verify actual MPN, package dimensions and pin mapping, not just a package family name such as SOT-23. Check polarity and connector orientation against the purchased part and its mate. Keep custom libraries project-local using `${KIPRJMOD}`. Record supplier code, inventory, assembly category and query date; stock changes.
+
+== Board rules
+
+The original beginner suggestions were signal width 0.25 mm, clearance 0.2 mm, via drill/diameter 0.3/0.6 mm, copper-to-edge 0.5 mm, silkscreen height/width 1.0/0.15 mm. Power width must be calculated from current and thermal conditions; the original suggested at least 0.5 mm as a beginner starting point, not a current-rating guarantee.
+
+Historical JLC capability figures in October 2026 were minimum track/space 0.10 mm, copper-edge 0.2 mm, with additional charges for certain small drills/vias. Recheck https://jlcpcb.com/capabilities/pcb-capabilities[current capabilities] and quotations. Our board brief and actual electrical requirements override these generic defaults.
+
+== Placement and routing
+
+Place mechanical constraints first: outline, connectors, controls and holes. Place ICs and nearby decoupling, then route constrained power and signals and provide suitable return paths. Add board/version/pin labels. Check no DRC errors or unconnected items remain and inspect 3D orientation. Upstream explicitly instructed beginners to route manually because it had no verified automatic placement/routing solution. Our routing laboratory explores automation separately.
+
+== Manufacturing exports
+
+Use link:workflow/kicad-tools.adoc[native CLI commands], with actual layers and matched origins. Inspect every Gerber layer. For JLC assembly, BOM fields include `Comment`, `Designator`, `Footprint`, `LCSC Part #`; CPL fields include `Designator`, `Mid X`, `Mid Y`, `Layer`, `Rotation`.
+
+The upstream proposed this BOM command but labeled it untested in KiCad 10; confirm help and generated CSV before use:
+
+[source,bash]
+----
+kicad-cli sch export bom --fields "Value,Reference,Footprint,LCSC" --labels "Comment,Designator,Footprint,LCSC Part #" --group-by "Value,Footprint,LCSC" --ref-range-delimiter "" --exclude-dnp -o out/bom-jlc.csv Board.kicad_sch
+----
+
+Grouping must include supplier code so equal values with different parts do not merge. Disable reference ranges: JLC expects explicit references. PowerShell 5.1 can drop an empty-string argument; upstream recommended Git Bash or PowerShell 7.3+. Convert raw positions separately, preserving originals, and review units, side, origin and rotation.
+
+[source,bash]
+----
+python3 skills/jlc-production-review/scripts/check_bom_cpl.py --bom out/bom-jlc.csv --cpl out/cpl-jlc.csv
+----
+
+The checker verifies references, duplicates, codes and coordinate/side format. It does not establish rotation, polarity, stock or footprint correctness. PASS is exit 0; WARNING is 1; incomplete/error is 2. Every warning needs a reason.
+
+== Ordering and delivery
+
+Choose bare PCB plus hand assembly or a suitable assembly tier. Check placement preview for every pin 1 and polarized part. Retain manual production and placement confirmations, include process requirements in order notes and assembly drawings, and freeze the exact upload package. The user authorizes external commitments. See link:workflow/jlc-ordering.adoc[JLC ordering] for details.
+
+After factory files arrive, compare against the submitted package and separately check component placement. After delivery, inspect assembly, check power-to-ground resistance and use a current-limited first power-up. Record real measurements outside the fixed release. The example-specific bring-up guide is background, not a test plan for our boards.

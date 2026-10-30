@@ -1,0 +1,36 @@
+= PCB layout for debugging and assembly
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream layout reference. The source practices came from a 95 by 50 mm four-layer MCU/LoRa/GNSS design. They are examples, not universal routing rules for our families. Electrical constraints and manufacturer requirements take precedence.
+
+== Grouping and labels
+
+Match PCB groups to schematic flow. Keep functional blocks together; references may use sheet ranges such as 1xx power, 2xx MCU, 3xx radio, 4xx GNSS. Keep silk references clear of pads/vias and use few consistent reading directions. Dense references can move to Fab, with a documented debug drawing.
+
+The source layer example used F.Cu for short/RF/high-current routes plus ground, In1 as uninterrupted ground, In2 for east-west long routes and B.Cu for north-south, filling spare areas with ground. Record actual net/layer use. This is a debug-friendly example; stackup, return paths and electrical constraints decide our layer assignment.
+
+== Debug access and drawings
+
+Provide accessible test points or pads for supplies, enables and critical I/O, plus convenient ground clips. Avoid hiding them under components/enclosures. Silk can show short net names while TP references stay on Fab. Record TP reference, net, position and expected measurement. Mark polarity, connector pin 1/signals and switch direction; if unknown, say “pending physical verification”. Retain optional/DNP footprints with markings. Use deliberate jumpers/zero-ohm links for isolating functional blocks or measuring supply current. Include project/version/date; optional back-side manufacturing notes can record stackup/finish.
+
+An upstream debug PDF example (check local CLI help):
+
+[source,bash]
+----
+kicad-cli pcb export pdf --sp --cdnp --ev --scale 2.6 -l F.Cu,F.SilkS,F.Fab,Edge.Cuts -o out/debug-top.pdf Board.kicad_pcb
+----
+
+`--sp` adds pad outlines/numbers on Fab, `--cdnp` crosses DNP and `--ev` hides values; scale 2.6 suited that particular board. Produce a corresponding bottom view.
+
+== Hand assembly
+
+Upstream preferred lead-free HASL (`HAL lead-free` in its KiCad setting) for that hand-soldered board and found OSP less convenient. Its tiny-pad GNSS release used OSP instead; finish is a process decision, not a universal rule. Surface ground zones used thermals, for example 0.3 mm gap/0.4 mm spokes, with solid inner connections. Choose actual thermal geometry for electrical/manufacturing needs. Leave access around the soldering side of hand-assembled parts.
+
+== Verification
+
+Run native DRC with `--all-track-errors --schematic-parity --severity-all`, matching board/project/schematic stems. A differently named temporary PCB may lose parity coverage. Explain warnings and require no unexpected errors/unconnected/parity issues. For silk/metadata-only edits compare track/via/pad/zone and component geometry, not just counts. Inspect layer PDFs and debug drawings. DRC does not establish RF impedance, factory acceptance or working hardware.

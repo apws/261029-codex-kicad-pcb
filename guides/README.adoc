@@ -1,0 +1,54 @@
+= Guide map and upstream documentation index
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+== Read these first
+
+. link:01-how-it-works.adoc[Complete interaction model]: user, Codex, skills, commands, MCP, KiCad and router.
+. link:02-first-experiment.adoc[First experiment]: create a generic working copy and establish evidence.
+. link:03-routing-lab.adoc[Routing laboratory]: native KiCad/Freerouting cycle and fair comparisons.
+. link:04-tool-inventory.adoc[Tool inventory]: every helper's purpose and dependency.
+
+These four guides explain our adapted workflow. The chapters below translate and adapt upstream material into English AsciiDoc, preserving useful technical procedures and historical limits. Repeated material is consolidated; Claude installation/hooks are intentionally omitted. The precise source-to-destination map is in link:../provenance/document-map.json[document-map.json].
+
+== Upstream guides by task
+
+[cols="2,3,2",options="header"]
+|===
+|Guide |Question answered |Usefulness for us
+|link:getting-started.adoc[Getting started] |How does the original human-assisted design-to-order workflow work? |Orientation; its beginner defaults are not our design rules
+|link:glossary.adoc[Glossary and project vocabulary] |What do the terms mean? |Reference throughout
+|link:first-board-checklist.adoc[Checklist] |What must be checked before ordering? |Useful baseline, extend for our electrical requirements
+|link:workflow/collaboration.adoc[Collaboration] |How are ownership, saved state and reviews handled? |Useful across Codex sessions
+|link:workflow/kicad-tools.adoc[KiCad tools] |Which CLI/MCP operations exist and what was actually checked? |Core technical reference
+|link:workflow/release-package.adoc[Release packages] |How do we freeze exact native/manufacturing/verification files? |Useful when accepting a candidate
+|link:workflow/jlc-ordering.adoc[JLC ordering] |How do parts, assembly, quotes and approvals fit together? |Relevant manufacturer workflow; historical prices/logistics are contextual
+|link:workflow/production-file-review.adoc[Production review entry] |Where is the detailed CAM procedure? |Later, when factory files arrive
+|===
+
+== Skill procedures and references
+
+[cols="2,3",options="header"]
+|===
+|Skill |Human guides
+|Readable schematic/layout |link:skills/readable-schematic-layout/workflow.adoc[Full workflow], link:skills/readable-schematic-layout/layout.adoc[debug layout], link:skills/readable-schematic-layout/konnect-limits.adoc[bridge limits]
+|JLC production review |link:skills/jlc-production-review/procedure.adoc[CAM/placement procedure], link:skills/jlc-production-review/cam-diff.adoc[script details]
+|JLC support |link:skills/jlc-support/workflow.adoc[workflow], link:skills/jlc-support/templates.adoc[message templates], link:skills/jlc-support/deadlines.adoc[historical deadlines], link:skills/jlc-support/pitfalls.adoc[lessons], link:skills/jlc-support/case-study.adoc[case timeline]
+|Enclosure STEP |link:skills/kicad-enclosure-step/workflow.adoc[workflow], link:skills/kicad-enclosure-step/model-sources.adoc[model sources], link:skills/kicad-enclosure-step/pitfalls.adoc[alignment/export pitfalls], link:skills/kicad-enclosure-step/enclosure-notes-template.adoc[handoff template]
+|===
+
+Skills are instructions plus scripts, not running agents or bundled tool installations. Our discovery entry points stay in `skills/<name>/SKILL.md`; keep the toolkit together when reusing them.
+
+== Optional background
+
+* link:examples/gnss-reference.adoc[GNSS example package], link:examples/independent-release-review.adoc[original narrow release review], link:examples/gnss-hardware-procedure.adoc[untested hardware procedure/results], link:examples/gnss-enclosure.adoc[mechanical output]. Skip these unless inspecting a file-processing example or the upstream evidence.
+* link:agents/domain.adoc[Domain docs], link:agents/issue-tracker.adoc[issue tracker], link:agents/triage-labels.adoc[triage labels]: historical mattpocock skill integration, not needed for PCB experiments. No GitHub remote/tracker is configured by this adaptation.
+* link:../templates/README.adoc[Project README], link:../templates/WORKLOG.adoc[work log], link:../templates/board-brief.adoc[board brief], link:../templates/routing-report.adoc[routing report]: copy into actual experiments.
+
+== Internal history
+
+link:../docs/README.adoc[Our dated docs] records analysis, changes and validation. Keep ongoing user instructions/current design state in the project README/WORKLOG, not buried in this upstream map.

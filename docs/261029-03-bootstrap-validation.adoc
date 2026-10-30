@@ -1,0 +1,57 @@
+= 2026-10-29: bootstrap and validation
+:leveloffset: +2
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+== Imported and adapted
+
+Created a separate local Git repository from upstream commit `8f14d7f9f76a19c7224bc7e5a325ef35e6fce06a`. Preserved machine/design/manufacturing examples and attribution; translated/adapted human documentation into guides, added a complete interaction guide and generic 7xsys/7xmod/7xmem templates, and adapted four Codex skills. No Claude hook/marketplace, global configuration or remote was installed.
+
+== Native tool observations
+
+Local KiCad CLI and pcbnew are 10.0.7. Java is OpenJDK 27. Konnect and Freerouting were not found on PATH. Python is 3.14.7; Pillow is present but gerbonara is absent, so the pinned Python 3.12 CAM environment is not established. CadQuery-dependent full STEP reproduction has not been performed.
+
+A disposable copy of the upstream example passed native ERC/DRC with all severities, all-track errors and schematic parity. Native XML netlist and schematic PDF exports succeeded. The harness preserved source file hashes. Native KiCad exported the four-layer board with existing tracks/vias/zones to DSN; this does not show that a particular router accepts every feature or preserves all constraints.
+
+During bootstrap, native via-width introspection initially emitted a KiCad assertion because its API requires a layer argument. The adapter was corrected and the check rerun successfully without that diagnostic.
+
+== Validation record
+
+Final validation scope is recorded below. Generated detailed logs remain in ignored build/ and experiments/bootstrap/. No physical hardware result, automatic placement success or autorouter quality result is claimed.
+
+== How to reproduce
+
+[source,bash]
+----
+/usr/bin/python3 tools/pcb-lab.py doctor
+python3 scripts/check_skills.py
+python3 scripts/check_privacy.py
+python3 -m unittest discover -s tests -v
+----
+
+The full Gerber-render suite requires the separately installed pinned CAM dependencies. Missing gerbonara is explicitly skipped rather than reported as a false CAM pass. Standard-library and available image-analysis checks still run. CLI/pcbnew smoke checks use isolated copies.
+
+For standalone Asciidoctor syntax/render validation, override the house inclusion offset with `-a leveloffset=0`; source files retain our required guide/timeline offsets. Raw standalone rendering without this override can emit expected heading-sequence warnings due to those offsets.
+
+== Completed checks and remaining gaps
+
+* Four Codex skills passed the Skill Creator validator. Project skill discovery links and all checked Markdown/AsciiDoc file links passed repository lint.
+* 44 AsciiDoc documents rendered with the standalone offset override and zero diagnostics. English guide/skill text scan found no remaining Chinese prose.
+* 125 tests ran: 93 passed, 32 optional gerbonara-dependent rendering tests skipped. Initial full-suite failures identified that missing dependency; a repository-check syntax error introduced during adaptation was corrected. Skips do not count as CAM validation.
+* All 42 preserved example artifacts match upstream SHA-256 values. Human Markdown files were translated/moved; this is an adaptation, not an identical upstream release archive.
+* The source-copy, overwrite refusal, recursive-copy refusal, symlink refusal, changed pad-net detection and lost locked-track detection checks passed.
+* Native baseline ERC/DRC/parity/netlist/PDF checks passed on the disposable example copy. Native DSN export passed without removing existing copper.
+* Native SES import was exercised using an empty synthetic session solely as an API/copy-boundary smoke check. It preserved footprint/pad snapshot data but changed routing: 322 to 224 track segments, 48 to 43 vias. Post-import native checks returned REVIEW_REQUIRED. This candidate is rejected; it is not a routing success. Original source files remained unchanged. The result demonstrates why imports need complete candidate isolation and post-checks.
+* CLI help checks passed for our harness and adapted validators; the retained Konnect stdio caller help also ran.
+* The text/ZIP privacy scan was CLEAN. Its binary-file exclusions are listed by the scanner; no new public personal data was introduced. This is not a full manual audit of original binary reference artifacts.
+
+Not performed: a real Freerouting run, routing-quality benchmarking on our boards, live Konnect/MCP editing, arbitrary schematic-edit automation, CadQuery STEP regeneration or hardware validation. No router/MCP executable, account connection, global Codex setting or manufacturing order was installed/created.
+
+== Completion on 2026-10-30
+
+The optional headless Chromium screenshot attempt terminated with a trace/breakpoint trap in the execution environment. Browser visual preview was not completed; the Asciidoctor HTML rendering and syntax checks above succeeded. The final repository is a local Git baseline, ready for choosing one of our actual designs as the next experiment.
+
+Whitespace validation passed for maintained code/documentation. Git flags pre-existing whitespace/CRLF in imported fixed example artifacts; these bytes were intentionally preserved and verified by SHA-256 rather than normalized. The external source checkout remains clean.

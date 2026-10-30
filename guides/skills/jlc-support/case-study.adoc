@@ -1,0 +1,28 @@
+= Historical four-layer GNSS order timeline
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of the anonymized upstream case study. Historical context only; not a board design recommendation. September 2026: 25 by 36.5 mm, four layers, five PCBs, two top-side assemblies, customer-soldered headers. D1 below means submission day, not component D1.
+
+[cols="1,3,3",options="header"]
+|===
+|Period |Question/action |Response/outcome
+|Early September |Stocked supercapacitor excluded from assembly; request manual matching/consignment |Neither available, no restoration date; all supercapacitors/batteries reportedly affected; design revised
+|Early/mid September |Reduce cart cost and request sales quote/coupon |Coupon had thresholds and region limits
+|D1 |Ask rail removal scope/cost, edge resistor safety, review-before-payment |All five boards depaneled, extra total charge after review, review first permitted; submitted unpaid
+|D2 |Chase advanced review after overnight delay |Conflicting claims about sent email; engineering mail arrived next day
+|D3 |Numbered answers about headers, diodes, LED and rails |PCB/PCBA review passed; final DFM pending
+|D6 |Ask where final DFM is |Only after payment; user paid
+|D6 evening |Two orders cancelled with compliance explanation; seek reason/restoration/schedule |Support admitted staff error, offered small coupon, refused restoration, no pre-holiday dispatch; final-rejection stop reached
+|D6–D7 |Reorder same files with prior clarifications, seek sales coordination |Replacement paid; no sales response recorded
+|D7 |Ask engineering to own progress and chat about DFM |Reassurance without schedule; chat ended
+|D7 afternoon |Factory sends confirmations |Depanel fee waived; PCB 48-hour request and PCBA 72-hour automatic-release notice
+|D7 evening |Ask about resistor, moved via, transistor orientation and J1 centre |Annotated answers: protective note, via move for plugging, transistor corrected to silk pin 1, viewer centre claim; J1 difference 0.89 mm remained
+|D10 |User handles remaining J1 issue |Original refund/compliance questions still unanswered in final record
+|===
+
+Effective practices: self-contained first messages, boundary sentences, coordinate-based questions, narrow follow-up and notes visible to factory engineering. Ineffective practices: mixing refund/compliance into long production threads and treating a promise to send email as completion.

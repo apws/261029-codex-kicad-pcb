@@ -1,0 +1,42 @@
+= Board brief and experiment constraints
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+== Identity and task
+
+* Family/name/revision: <unknown>.
+* Function and connected equipment: <unknown>.
+* Requested experiment: <readback / schematic edit / placement / routing / manufacturing>.
+* Files and authoritative revision: <unknown>.
+* Allowed changes and fixed geometry: <unknown>.
+
+== Electrical requirements
+
+* Supplies, tolerances, sequencing and maximum currents: <unknown>.
+* Interface pinouts, logic levels and voltage tolerance: <unknown>.
+* Clock frequencies AND relevant signal edge rates: <unknown>.
+* Critical nets, timing/skew/length/impedance/termination constraints: <unknown>.
+* Decoupling, power/return paths, protection and test access: <unknown>.
+* Manufacturer datasheets/reference circuits and applicable errata: <links and revisions>.
+
+== Mechanical and manufacturing requirements
+
+* Outline, thickness, holes, connector positions and mating boards: <unknown>.
+* Layers/stackup, layer functions, keepouts and assembly sides: <unknown>.
+* JLCPCB process/assembly tier, finish and selected capabilities: <unknown; verify when ordering>.
+* Trace/via/clearance rules and local exceptions: <unknown>.
+* Component sourcing and hand-soldered/DNP parts: <unknown>.
+
+== Routing experiment
+
+* Starting candidate and baseline report: <unknown>.
+* Permitted nets/layers, fixed routes and locked items: <unknown>.
+* Router release/JAR hash/Java version: <unknown>.
+* Pass/thread/time limits and comparison variants: <unknown>.
+* Acceptance criteria beyond zero unconnected: <unknown>.
+
+Do not infer any of these values from 7xsys, 7xmod or 7xmem naming. Record where each fact came from and which missing fact blocks the next edit.

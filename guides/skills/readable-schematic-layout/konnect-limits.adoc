@@ -1,0 +1,17 @@
+= Observed Konnect editing limits
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English translation/adaptation of upstream reference. Snapshot: Konnect 0.12.1, October 2026. Inspect `get_installation_info` and actual tool schemas before applying these observations elsewhere.
+
+* `update_pcb_from_schematic` skipped components with `in_bom=no`, such as test points; upstream used the GUI Update PCB from Schematic (F8) to restore them.
+* Imported footprints lost some SMD/THT attributes and pad chamfers. Library update could not handle some rule areas, pad clearances or text formats and removed Datasheet/Description fields. Upstream reloaded affected footprints with pcbnew while the editor was closed, comparing pad positions/nets and restoring fields from netlist.
+* Reference text could not be moved; silk cleanup used pcbnew offline.
+* Send `add_zone` sequentially; concurrent additions returned `AS_BUSY`.
+* For many tracks, calculate candidate coordinates on a temporary native board and run DRC before live writes, then read back.
+
+These limitations justify native readback and complete backups; they are not claims about every future bridge/version.

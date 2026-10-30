@@ -1,0 +1,41 @@
+= 2026-10-29: project purpose and entry points
+:leveloffset: +2
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+== Purpose
+
+Create a usable Codex-only starting point for automated KiCad work on our 7xsys/7xmod/7xmem designs. JLCPCB is our preferred manufacturer. We have previously tried Java Freerouting briefly; this laboratory should establish whether a better organized Codex-controlled loop improves usefulness, rather than assume a different router is better.
+
+The user reports discovering upstream through a JLCPCB Twitter/X share. The post has not been independently identified. This explains its relevance to our manufacturing workflow; it is not evidence of electrical correctness or routing quality.
+
+== Intended use
+
+. Choose one complete native KiCad design directory and a precise task.
+. Create a new experiment using `tools/pcb-lab.py init`; keep the source recoverable.
+. Fill in the board brief: interfaces, voltage/current, mechanics, layers, critical nets and manufacturing requirements. Unknowns stay unknown.
+. Establish ERC/DRC/netlist and geometric baseline.
+. Try one operation: readback, footprint movement, schematic edit, or DSN/SES routing.
+. Recheck and visually inspect; record evidence and limitations in the experiment report.
+. Promote an accepted design to a fixed manufacturing package only after design review.
+
+The GNSS example is optional background and a file-processing fixture. Its RF rules, dimensions, stackup and parts are never defaults for our boards.
+
+== Reading order
+
+[cols="1,3",options="header"]
+|===
+|Document |What it answers
+|link:../guides/01-how-it-works.adoc[How it works] |Who does what; what a skill is; how Codex actually uses tools; concrete conversation flow.
+|link:../guides/02-first-experiment.adoc[First experiment] |How to start with our own board and interpret outputs.
+|link:../guides/03-routing-lab.adoc[Routing lab] |What Freerouting adds, what MCP adds, and how to compare approaches.
+|link:../guides/README.adoc[Full guide map] |Where every upstream topic moved and what is useful now or later.
+|link:261029-02-upstream-analysis.adoc[Analysis] |Why Claude is optional, real capability gaps and our adaptation choices.
+|===
+
+== Documentation convention
+
+`guides/` holds maintained English AsciiDoc explanations. `docs/` is our internal dated timeline, using `YYMMDD-NN-description.adoc`. Required machine entry points `AGENTS.md` and `SKILL.md` remain English Markdown. Dated notes use `:leveloffset: +2`; maintained guides use `+1`, with highlight.js, TOC and native AsciiDoc blocks.

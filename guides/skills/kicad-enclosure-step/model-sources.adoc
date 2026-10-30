@@ -1,0 +1,23 @@
+= 3D model sources and distribution
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream source reference. Licensing observations date to October 2026 and require checking the actual current terms before redistribution.
+
+[cols="1,3,3",options="header"]
+|===
+|Priority/source |Acquisition/use |Distribution considerations
+|KiCad official |`${KICAD10_3DMODEL_DIR}/<library>.3dshapes/<name>.step`; standard parts and unchanged renamed footprints often align without offset |CC-BY-SA 4.0 with library exception; reference installed models instead of copying library files; retain NOTICE
+|Manufacturer |Product/wiki/datasheet CAD link, including manufacturer-hosted uploads on other platforms |Vendor terms govern; no inferred redistribution permission
+|LCSC/EasyEDA |`easyeda2kicad --3d --footprint --lcsc_id Cxxxx --output <new-dir>/lib_Cxxxx` |Upstream treated as internal-only absent explicit distribution permission
+|SnapEDA/Ultra Librarian |Account-based download or generation |Platform-specific terms and possible generation delay
+|Self-authored |`simple_model.py`, boxes/cylinders from cited dimensions |Record source in model spec; useful for public examples or unreliable downloaded geometry
+|===
+
+Search manufacturer domains for part-number STEP/3D model. Development-board resource/mechanical sections may contain CAD, DXF or KiCad files. Manufacturer projects may reference unavailable internal model paths and incorrect nominal board thickness; inspect outputs.
+
+For enclosure envelopes, model typical dimensions and list maxima so clearance can be chosen. Include protrusions, connector openings, levers and through-board pins; interior details/text are usually unnecessary.

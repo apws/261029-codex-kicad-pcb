@@ -1,0 +1,115 @@
+= Native KiCad tools and optional Konnect MCP
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+English adaptation of upstream `docs/workflow/kicad-tools.md`. Version-specific observations below are upstream's September/October 2026 checks of Konnect 0.12.1 (`fa62e1c`), KiCad 10.0.6 and Node 24.20.0 on Windows. Our local KiCad is 10.0.7. Konnect was archived upstream on 2026-10-26; installation and live editing have not been validated here.
+
+== Tool responsibilities
+
+[cols="1,2,3",options="header"]
+|===
+|Task |Tool |Acceptance evidence
+|ERC, DRC, schematic parity |`kicad-cli` |Native reports, including warnings and exclusions
+|Gerber, drill, BOM, CPL, PDF |CLI or project export script |Complete manufacturer-specific output set
+|Read project/schematic/board |Konnect or native exports/scripts |Correct target and reported source
+|Schematic edits |Konnect `sch_*` toolsets or file editing |Native netlist, ERC and file differences
+|Live PCB edits |Konnect through IPC |Correct open PCB, `source=ipc`, readback/save
+|Update PCB from schematic |KiCad GUI |Upstream Konnect synchronization not verified
+|Automatic placement/routing |Separate experiment |No upstream validated general solution
+|EMC/SPICE/datasheet analysis |Analysis skills and relevant tools |Actual outputs and primary sources
+|Backup |Complete project copy or inspected commit |Recoverable files, not merely hashes or PDFs
+|===
+
+Some external tools send designs to remote services. Check the actual tool implementation and data destination before using a private design. Local rollback cannot retract already-transmitted information.
+
+== Pin versions and configure explicitly
+
+Obtain a platform-appropriate Konnect release from https://github.com/mixelpixx/Konnect[its repository], record full commit, release URL, asset URL, archive SHA-256, executable path, AGPL-3.0 license and verified KiCad version in a local version record. Compare the download hash with the published release digest when available. Keep tool binaries and machine-specific config out of Git.
+
+Avoid `konnect init`: the observed version writes skills/agents to client settings and may conflict with an existing setup. It also enters installation mode when launched interactively with terminal stdin. Start through a stdio client instead. Always pass `--config` with an exact local path; otherwise its config discovery can choose a different project's settings. Do not set a default project directory; pass precise file paths per operation.
+
+Start from link:../../scripts/konnect/config.example.toml[the example configuration]. Codex configuration, if explicitly setting up the optional server:
+
+[source,toml]
+----
+[mcp_servers.konnect]
+command = '/absolute/path/to/konnect'
+args = ['--config', '/absolute/path/to/config.toml']
+startup_timeout_sec = 30
+tool_timeout_sec = 120
+----
+
+This is a local configuration example, not a request to overwrite global Codex settings. Restart the client after changing a loaded server, then inspect the actual installation. Restore only this MCP section when undoing setup, not an old whole configuration file.
+
+== Discover and operate
+
+. Identify the exact design, single writer and recoverable copy.
+. Call `get_installation_info`; inspect version, commit, executable, KiCad version and `configuration.source=explicit_path`. An installation source of `unknown` for standalone installs can be normal; asset hashes supply provenance.
+. Call `list_toolboxes`, then `load_toolset`, then refresh `tools/list`. Use returned schemas rather than guessed parameters.
+. Read `get_project_info`, `list_schematic_components` and `get_board_info`.
+. For schematics use `sch_components`, `sch_wiring`, `sch_hierarchy`, save and compare native netlist/ERC/files. Coordinate any open GUI buffer so it cannot overwrite disk edits.
+. For live PCB editing, open the exact PCB and enable KiCad API under Preferences/Plugins. Preserve existing settings before changing them. `open_project` should report `requested_open=true`; `get_editor_state` must identify the intended document and successful IPC availability.
+. Read back each change. `source=ipc` means live state; `source=file` means disk fallback and requires appropriate GUI reload.
+. Save GUI changes before DRC, or explicitly synchronize live state. Native CLI is the final file-level check.
+
+`isError=true` is failure; `isError=false` only means a response arrived. Inspect nested `success`, `source`, `ipc_available`, `ipc_failure`, rejections and diagnostics. On a timeout or ambiguous mutation, inspect state/transactions before retrying; do not duplicate writes blindly. Toolset errors name the set that must first be loaded.
+
+== Upstream capability evidence
+
+Small schematic create/add/connect/value edits passed native netlist checks. Full-project reads passed. Offline footprint move-and-return restored geometry and PCB hash. IPC component reads/moves passed and GUI Undo worked. A single route segment was added/read/deleted by UUID; this is not obstacle avoidance or whole-board routing evidence. ERC/DRC matched CLI baselines.
+
+Exports produced files, but default MCP Gerbers lacked Paste and generic BOM/CPL lacked manufacturer rules. Placement was unverified. The observed Konnect DSN exporter was limited to two copper layers and boards without existing tracks/vias/zones; Freerouting integration was unverified. `snapshot_project` produced a PDF, not a backup. Use native KiCad DSN for our initial routing experiment instead of removing copper to satisfy that bridge.
+
+== Stdio fallback
+
+When tool discovery does not refresh, use link:../../scripts/konnect-call.mjs[the Node caller]. It uses Node built-ins, launches Konnect, loads toolsets, calls tools and saves responses/stderr as JSON.
+
+[source,bash]
+----
+export KONNECT_EXE=/absolute/path/to/konnect
+export KONNECT_CONFIG=/absolute/path/to/config.toml
+node scripts/konnect-call.mjs request.json response.json
+----
+
+[source,json]
+----
+{"toolsets":["sch_components","pcb_board"],"listTools":true,
+ "calls":[{"name":"get_board_info","arguments":{"board":"/absolute/path/Board.kicad_pcb"}}]}
+----
+
+First discover schemas with `listTools`. `--exe`, `--config` and `--timeout` override settings; timeout defaults to 120000 ms. Calls stop on `isError` unless `continueOnError` is true. Responses can contain local paths/private logs.
+
+== Native checks and exports
+
+Inspect `kicad-cli version` and each command's `--help`. The following options were documented for KiCad 10.0.6; use outputs outside frozen references. Replace `Board`, create output directories, and select the actual layer stack.
+
+[source,bash]
+----
+kicad-cli sch erc --severity-all --exit-code-violations --format json -o out/erc.json Board.kicad_sch
+kicad-cli pcb drc --severity-all --all-track-errors --schematic-parity --exit-code-violations --format json -o out/drc.json Board.kicad_pcb
+kicad-cli sch export netlist --format kicadxml -o out/schematic.net Board.kicad_sch
+kicad-cli sch export pdf -o out/schematic.pdf Board.kicad_sch
+kicad-cli pcb export gerbers -o out/gerbers/ --use-drill-file-origin --layers F.Cu,In1.Cu,In2.Cu,B.Cu,F.Paste,B.Paste,F.Mask,B.Mask,F.SilkS,B.SilkS,Edge.Cuts Board.kicad_pcb
+kicad-cli pcb export drill -o out/gerbers/ --drill-origin plot --excellon-separate-th --generate-map --map-format pdf --generate-report --report-path out/drill-report.txt Board.kicad_pcb
+kicad-cli pcb export pos --format csv --units mm --side front --use-drill-file-origin --exclude-dnp -o out/cpl.csv Board.kicad_pcb
+kicad-cli sch export bom --fields "Reference,Value,Footprint,QUANTITY,DNP" --group-by Value,Footprint --exclude-dnp -o out/bom.csv Board.kicad_sch
+kicad-cli pcb export pdf --mode-single --layers F.Cu,F.SilkS,Edge.Cuts -o out/top.pdf Board.kicad_pcb
+----
+
+Remove inner layers for a two-layer board. Align drill/place and Gerber origins. Raw BOM/CPL need JLC field names, supplier codes, rotation/origin review and assembly filtering.
+
+`pcb drc --refill-zones` refills in memory according to help; adding `--save-board` writes the PCB. `pcb upgrade` and `sch upgrade` also rewrite files. The upstream did not verify whether export `--check-zones` writes back; use a working copy. Ordinary exports/ERC/DRC write their requested outputs. Read-only release review never uses `--save-board` on the reference.
+
+On candidates, refill/save then recheck; confirm a second refill makes no unexpected difference. Use matching board/project/schematic stems for parity. In restricted environments, writable temporary `KICAD_CONFIG_HOME` and `KICAD_DOCUMENTS_HOME` can isolate configuration errors; judge actual exit codes and outputs, not stderr alone.
+
+== Before/after checklist and pitfalls
+
+Back up the whole project including libraries, `.kicad_dru`, library tables and export settings. Reopen the backup and compare hashes. After edits check netlist changes, full ERC/DRC/parity/unconnected counts, nets/footprints/tracks/vias/zones and file differences; regenerate manufacturing outputs when making a new release.
+
+Tools may fail to refresh after dynamic load; use stdio fallback. `eager_toolsets=true` was suggested but not tested upstream. Missing API/socket or `AS_NOT_READY` means live IPC is unavailable. Non-ASCII paths worked for upstream KiCad/Konnect, while unrelated toolchains failed; use an ASCII temporary path diagnostically, not as proof of cause. Global tool defaults can contain inappropriate two-layer constraints. Windows Claude Desktop path redirection affected cross-client caches historically; it is not part of our Codex/Linux setup.
+
+If switching to another MCP server, stop the current writer, preserve the design, use one server, restart the client and check actual capabilities. Upstream named kicad-copilot as a possible routing exception, with remote-service data concerns; it is not installed or validated here. Read link:../skills/readable-schematic-layout/konnect-limits.adoc[additional observed editing limits].

@@ -1,0 +1,20 @@
+= Board experiment work log
+:leveloffset: +1
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+Newest entries first. Record absolute timestamp/timezone, owner, exact version, scope, changes, evidence, stopping point and next step. Later corrections supersede older entries. A historical next step does not authorize new work.
+
+== <timestamp>: initial copy
+
+* Owner: <user or Codex>; writer status: <active/released>.
+* Source/revision: <path, commit or manifest>.
+* Changes: copied native project; source retained.
+* Verification: <commands, report paths and results>.
+* Not performed: <routing, hardware tests, manufacturing submission, etc.>.
+* Stop/next: <concrete next action and missing facts>.
+
+Keep changing order/support details in private reports and link them here. Do not record credentials, addresses or payment details.

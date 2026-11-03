@@ -1,0 +1,23 @@
+= 2026-11-03: public GitHub publication
+:leveloffset: +2
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+== Destination and authorization
+
+The user requested committing and publishing this repository publicly on GitHub. Destination: https://github.com/apws/261029-codex-kicad-pcb[apws/261029-codex-kicad-pcb], branch `main`. The repository retains upstream attribution, license and third-party notices.
+
+== Preparation
+
+The tracked text/ZIP privacy scanner passed. All reachable pre-publication file versions were also scanned; PDF text/metadata were checked and the three included reference PNGs were inspected. No content matches were found. The existing conversation archive preserves its explicit privacy redactions. Private experiments, generated reports, local configuration and binaries remain ignored.
+
+Personal author/committer email metadata existed in the three unpublished local commits. A private Git bundle was retained inside `.git/` before rewriting those identities to the public GitHub handle and noreply address. Commit trees, messages and dates were preserved. Historical commit identifiers quoted in the conversation consequently refer to the original local history. The backup bundle and unreachable original commit objects are not part of the pushed branch.
+
+The main README now provides clone instructions and the public URL. References to the optional neighboring external checkout are plain local-path examples rather than broken public links. Native example artifacts were not changed.
+
+== Checks and scope
+
+Repository skill/file-link lint, privacy checks and Asciidoctor rendering of changed documents were run before publication. This update changes documentation and Git metadata; no routing, live KiCad editing or hardware experiment was performed. Publication does not alter the verification limitations documented in the bootstrap report.

@@ -6,7 +6,7 @@
 :source-highlighter: highlight.js
 :experimental:
 
-Converted from upstream `docs/agents/domain.md`. Optional historical integration for mattpocock engineering skills. These are not installed or required. This local repository has no configured remote tracker; do not create upstream issues. Our glossary is guides/glossary.adoc and our decisions use dated docs/. Use --body-file for multiline GitHub text if publication is authorized.
+Converted from upstream `docs/agents/domain.md`. Optional historical integration for mattpocock engineering skills. These are not installed or required. The public adaptation is apws/261029-codex-kicad-pcb; these historical conventions do not authorize creating issues in the original upstream repository. Our glossary is guides/glossary.adoc and our decisions use dated docs/. Use --body-file for multiline GitHub text if publication is authorized.
 
 How the engineering skills should consume this repo's domain
 documentation when exploring the codebase.

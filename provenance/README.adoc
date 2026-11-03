@@ -6,7 +6,7 @@
 :source-highlighter: highlight.js
 :experimental:
 
-Source: https://github.com/John-owo/pcb-agent-workflow[pcb-agent-workflow], commit `8f14d7f9f76a19c7224bc7e5a325ef35e6fce06a`, clean local checkout imported 2026-10-29. This is a new local Git repository containing an attributed adaptation, not a claim to preserve the upstream Git history. No remote is configured.
+Source: https://github.com/John-owo/pcb-agent-workflow[pcb-agent-workflow], commit `8f14d7f9f76a19c7224bc7e5a325ef35e6fce06a`, clean local checkout imported 2026-10-29. This is a new local Git repository containing an attributed adaptation, not a claim to preserve the upstream Git history. The public remote, added on 2026-11-03, is https://github.com/apws/261029-codex-kicad-pcb[apws/261029-codex-kicad-pcb].
 
 Original language entry point: https://github.com/John-owo/pcb-agent-workflow/blob/main/README.md[Traditional Chinese README]; companion https://github.com/John-owo/pcb-agent-workflow/blob/main/README.en.md[English overview]. For why we are studying it and what was added locally, read link:../docs/261103-01-project-context-and-upstream.adoc[our project context]. The local adaptation is now named `261029-codex-kicad-pcb`.
 

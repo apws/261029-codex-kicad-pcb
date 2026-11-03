@@ -46,7 +46,7 @@ Skills are instructions plus scripts, not running agents or bundled tool install
 == Optional background
 
 * link:examples/gnss-reference.adoc[GNSS example package], link:examples/independent-release-review.adoc[original narrow release review], link:examples/gnss-hardware-procedure.adoc[untested hardware procedure/results], link:examples/gnss-enclosure.adoc[mechanical output]. Skip these unless inspecting a file-processing example or the upstream evidence.
-* link:agents/domain.adoc[Domain docs], link:agents/issue-tracker.adoc[issue tracker], link:agents/triage-labels.adoc[triage labels]: historical mattpocock skill integration, not needed for PCB experiments. No GitHub remote/tracker is configured by this adaptation.
+* link:agents/domain.adoc[Domain docs], link:agents/issue-tracker.adoc[issue tracker], link:agents/triage-labels.adoc[triage labels]: historical mattpocock skill integration, not needed for PCB experiments. The adaptation has its own GitHub remote; the historical upstream issue-tracker conventions are optional.
 * link:../templates/README.adoc[Project README], link:../templates/WORKLOG.adoc[work log], link:../templates/board-brief.adoc[board brief], link:../templates/routing-report.adoc[routing report]: copy into actual experiments.
 
 == Internal history

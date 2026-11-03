@@ -22,6 +22,15 @@ Our aim is to understand the complete user/agent/skills/tools process and evalua
 . Browse link:guides/README.adoc[Guide map] for all translated upstream material.
 . Read link:docs/261029-01-project-summary.adoc[Project summary] and link:docs/261029-02-upstream-analysis.adoc[Analysis and decisions].
 
+== Local AsciiDoc browser preview
+
+The root-level CSS/JS files provide our generic Mixworx documentation style, shared with the 7xtgv project. Use them with Asciidoctor.js Live Preview for local browser viewing. Enable the extension's *Allow access to file URLs* setting, open a local `.adoc` file, then select these files in its options:
+
+* link:asciidoctorjs-crx-mixworx.css[asciidoctorjs-crx-mixworx.css]: custom stylesheet for typography, headings, tables, code blocks and printing.
+* link:asciidoctorjs-crx-mixworx.js[asciidoctorjs-crx-mixworx.js]: custom JavaScript; run it *after the document has been rendered*. It styles modifier key labels, splits headings at a prose colon and restores fragment/anchor positions after rendering.
+
+These assets are reusable across our projects. After moving the repository or updating the helper, re-select the files in the extension options if needed.
+
 == What is where
 
 [cols="1,3",options="header"]

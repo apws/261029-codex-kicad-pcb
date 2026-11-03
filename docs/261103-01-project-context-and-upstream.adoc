@@ -66,3 +66,7 @@ The first day's visible messages span approximately 52 minutes, from October 29 
 The user clarified that personal information, secure data and email addresses must not be exposed in the conversation archive. Historical local account path prefixes were redacted to `<workspace>/`; email addresses would be replaced if present. Message text was compared with the source after these privacy transformations. Tool output, which can contain unrelated account data, is excluded entirely. The archive includes the privacy clarification and continuation requests up to its recorded capture boundary.
 
 The five changed/new AsciiDoc files rendered successfully; repository skill/file-link checks passed. The directory rename preserved the existing Git history and skill discovery links. No new design/routing experiment was performed.
+
+== Shared local browser-preview style
+
+The user supplied `asciidoctorjs-crx-mixworx.css` and `asciidoctorjs-crx-mixworx.js` in the repository root, sharing the generic local Asciidoctor.js preview style used by 7xtgv. The main README now links to both files and explains stylesheet selection, file-URL access and JavaScript execution after rendering. The assets were retained as supplied. File links, Asciidoctor rendering and privacy scanning were checked; live browser-extension operation was not exercised in this update.

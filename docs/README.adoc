@@ -6,6 +6,8 @@
 :source-highlighter: highlight.js
 :experimental:
 
+* link:261103-02-CHAT-project-conversation.adoc[2026-11-03 CHAT: project conversation with privacy redactions, excluding tool output].
+* link:261103-01-project-context-and-upstream.adoc[2026-11-03: original Chinese project, learning goals, optional manufacturing and Freerouting context].
 * link:261029-01-project-summary.adoc[2026-10-29: project purpose and use].
 * link:261029-02-upstream-analysis.adoc[2026-10-29: source analysis, Codex-only architecture and routing direction].
 * link:261029-03-bootstrap-validation.adoc[2026-10-29: import, adaptation and validation results].

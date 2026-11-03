@@ -8,6 +8,12 @@
 
 A reusable local workflow for our 7xsys, 7xmod and 7xmem boards, with Codex as the only AI agent and JLCPCB as the preferred manufacturer. No family-specific electrical or mechanical requirements are assumed. This is a toolkit and experiment template; automatic placement and routing quality must be measured on our designs.
 
+== Original project and our study
+
+This local repository is an English, Codex-only adaptation of https://github.com/John-owo/pcb-agent-workflow[John-owo/pcb-agent-workflow]. Read its https://github.com/John-owo/pcb-agent-workflow/blob/main/README.md[original Traditional Chinese README] or https://github.com/John-owo/pcb-agent-workflow/blob/main/README.en.md[English overview]. The imported local source is link:../@extern/261029-pcb-agent-workflow/README.md[the external checkout].
+
+Our aim is to understand the complete user/agent/skills/tools process and evaluate useful automation for 7xsys/7xmod/7xmem boards. Upstream also covers optional PCB fabrication and assembly through JLCPCB; those procedures remain useful with manual PCB design. Freerouting is our added experiment path, with no recorded real routing trial yet. See link:docs/261103-01-project-context-and-upstream.adoc[our motivation and scope] and link:docs/261103-02-CHAT-project-conversation.adoc[the project conversation].
+
 == Start here
 
 . Read link:guides/01-how-it-works.adoc[How the complete workflow works]: user, Codex, skills, scripts and KiCad.

@@ -8,6 +8,8 @@
 
 Source: https://github.com/John-owo/pcb-agent-workflow[pcb-agent-workflow], commit `8f14d7f9f76a19c7224bc7e5a325ef35e6fce06a`, clean local checkout imported 2026-10-29. This is a new local Git repository containing an attributed adaptation, not a claim to preserve the upstream Git history. No remote is configured.
 
+Original language entry point: https://github.com/John-owo/pcb-agent-workflow/blob/main/README.md[Traditional Chinese README]; companion https://github.com/John-owo/pcb-agent-workflow/blob/main/README.en.md[English overview]. For why we are studying it and what was added locally, read link:../docs/261103-01-project-context-and-upstream.adoc[our project context]. The local adaptation is now named `261029-codex-kicad-pcb`.
+
 `upstream-files.json` contains source member SHA-256 values. `document-map.json` maps all upstream Markdown files to translated/adapted destinations or explicitly omitted Claude entry points. Human prose is English AsciiDoc. Most translations reorganize/consolidate repeated explanations and replace operational Claude instructions with Codex equivalents; they are maintained adaptations rather than line-for-line transcripts. Historical environment, prices and validation limits remain labeled.
 
 Native example design/library/manufacturing/STEP/image/JSON artifacts are preserved byte-for-byte. Explanatory Markdown is moved to guides, so the example directory as a whole is not an identical original ZIP. For a byte-identical original repository, use the source commit. Machine-file hashes are verified during bootstrap; private experiments do not modify them.

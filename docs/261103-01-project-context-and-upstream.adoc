@@ -1,0 +1,68 @@
+= 2026-11-03: why we are studying this workflow and where it comes from
+:leveloffset: +2
+:toc:
+:toclevels: 4
+:sectnums:
+:source-highlighter: highlight.js
+:experimental:
+
+== Original project and this local adaptation
+
+The original project is https://github.com/John-owo/pcb-agent-workflow[John-owo/pcb-agent-workflow]. Its main documentation is in Traditional Chinese: https://github.com/John-owo/pcb-agent-workflow/blob/main/README.md[original Chinese README]. It also provides https://github.com/John-owo/pcb-agent-workflow/blob/main/README.en.md[an English overview], while the detailed upstream guides were primarily Chinese in the imported snapshot.
+
+Our local source snapshot is link:../../@extern/261029-pcb-agent-workflow/README.md[the external checkout's Chinese README]. We adapted commit `8f14d7f9f76a19c7224bc7e5a325ef35e6fce06a`; see link:../provenance/README.adoc[provenance] and link:../provenance/document-map.json[the translation map]. Our guides are English adaptations with repeated material consolidated, not a promise of line-for-line translation or ongoing synchronization with upstream.
+
+On 2026-11-03 the local repository directory was renamed from `261029-kicad-pcb` to `261029-codex-kicad-pcb`. Git history and relative skill links remain intact. Historical conversation links retain their old directory spelling, with personal path prefixes redacted; use the current README and guide index for navigation. Existing experiment instructions that referred to the old toolkit location were updated; historical reports were preserved.
+
+== What the user asked us to understand
+
+On October 29 the user asked us to inspect the original solution, explain why it involved both Codex and Claude, and establish whether Codex plus KiCad could handle the workflow alone. The next request was to create a useful local Codex-only adaptation for testing our own designs, translate the documentation into English AsciiDoc guides, and reserve `docs/` for our internal dated analysis and conversation history.
+
+The central learning goal is the complete interaction: what the user specifies, what Codex decides, when a skill is read, which scripts or MCP tools execute an operation, how KiCad supplies evidence, and which stages still need engineering judgment. The user wants to understand what each part contributes before relying on automation.
+
+The intended targets are generic 7xsys/7xmod/7xmem boards. Their electrical and mechanical details have not been supplied, so none are inferred. The specific upstream GNSS circuit is outside the user's design interest; it remains optional process background and a tool-check fixture.
+
+JLCPCB is the preferred manufacturer. The user discovered the project through a reported JLCPCB Twitter/X share; we have not identified or independently checked that post. Its relevance is the shared manufacturing context, not evidence of a validated design or routing algorithm.
+
+== November 3 clarification
+
+The user has read the converted/generated documentation over the intervening days and finds the original approach formal, detailed and professional, while still learning its terminology and structure. Limited available time and other distractions mean there has not yet been a focused test of the proposed automation on our own boards. Reading the guides does not change the recorded verification status.
+
+The user previously expected to design PCBs manually. Reports of faster automated design prompted this investigation, but the current purpose is to learn the workflow and judge its usefulness, rather than assume a complete autonomous solution already exists. The glossary and detailed procedures are reference material to consult incrementally.
+
+== Does it include manufacturing an entire board?
+
+Yes, as an optional workflow. The original covers design assistance in KiCad, rule/connectivity checking, preparation of manufacturing files, ordering PCB fabrication and optional component assembly from JLCPCB, supplier correspondence, comparison of factory production/placement files, and post-delivery hardware-test records.
+
+[cols="1,3,2",options="header"]
+|===
+|Stage |What the workflow helps organize |Relevant reading
+|Design |Requirements, schematic, parts/footprints, placement/routing and native checks |link:../guides/01-how-it-works.adoc[Interaction model]
+|Release |Matching Gerber/drill/BOM/CPL/drawings and a fixed verified package |link:../guides/workflow/release-package.adoc[Release packages]
+|Fabrication and assembly |Bare PCB or suitable PCBA service, part matching, quotation, order settings and user decisions |link:../guides/workflow/jlc-ordering.adoc[JLC ordering]
+|Factory review |PCB CAM comparison and separate component placement/polarity review |link:../guides/skills/jlc-production-review/procedure.adoc[Production review]
+|Supplier communication |Clear questions, deadline tracking and correspondence drafts |link:../guides/skills/jlc-support/workflow.adoc[Support workflow]
+|Delivery and bring-up |Documenting physical checks and measurements |link:../guides/examples/gnss-hardware-procedure.adoc[Example-specific procedure]
+|===
+
+The factory manufactures and optionally assembles the board; the agent prepares and checks information. Orders, payment and production approval remain user decisions. A toolkit covering all these stages does not establish that a board was autonomously designed or works electrically. The upstream snapshot's physical GNSS test results remain unfilled.
+
+This explains much of the documentation's formality: it manages version identity, recoverable changes, evidence, supplier ambiguity and potentially time-limited factory confirmations across a long process. These parts can be useful even if the entire PCB is designed and routed manually. We can start with local KiCad experiments and add manufacturing procedures only when they are needed.
+
+== Where Freerouting fits
+
+The user added Freerouting as an avenue to investigate, based on a brief earlier Java Freerouting trial. Our adaptation makes native KiCad DSN export, a separately chosen local router and SES candidate import a concrete experiment path. It is not the original project's demonstrated autonomous routing capability and is not required to use the rest of its workflow.
+
+Codex can coordinate preparation, commands and evaluation; Freerouting computes routes. The bootstrap exercised native KiCad checks/export and a synthetic import smoke check, but no real Freerouting run or routing-quality trial on our boards has been recorded. See link:261029-03-bootstrap-validation.adoc[the evidence] and link:../guides/03-routing-lab.adoc[the routing laboratory]. No new routing experiment was requested or performed in this follow-up.
+
+== Conversation and timing
+
+The user requested a verbatim record of our conversation from the start of this project, omitting detailed tool/code output. See link:261103-02-CHAT-project-conversation.adoc[CHAT: project conversation]. It preserves user and assistant message text, including progress updates, with original timestamps and explicit privacy redactions; tool calls, tool results, environment blocks and internal instructions are excluded.
+
+The first day's visible messages span approximately 52 minutes, from October 29 at 14:43 to 15:35 Europe/Prague. Work resumed on October 30 at 08:05 and the completion message followed at 08:06. This is consistent with roughly an hour of initial interaction/work spread across interruptions, but message timestamps do not measure exact active execution time. The November 3 discussion is a later follow-up.
+
+== Privacy and follow-up validation
+
+The user clarified that personal information, secure data and email addresses must not be exposed in the conversation archive. Historical local account path prefixes were redacted to `<workspace>/`; email addresses would be replaced if present. Message text was compared with the source after these privacy transformations. Tool output, which can contain unrelated account data, is excluded entirely. The archive includes the privacy clarification and continuation requests up to its recorded capture boundary.
+
+The five changed/new AsciiDoc files rendered successfully; repository skill/file-link checks passed. The directory rename preserved the existing Git history and skill discovery links. No new design/routing experiment was performed.
